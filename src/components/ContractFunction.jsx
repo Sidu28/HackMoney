@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-    parseInputs
-  } from "../util/interact.js";
+import { parseInputs, parseOutputsJSX } from "../util/interact.js";
 
 const ContractFunction = ({
   contract,
@@ -20,12 +18,12 @@ const ContractFunction = ({
     try {
       //parse args
 
-    //   parseInputs(state, inputs)
-    console.log()
+      //   parseInputs(state, inputs)
 
       const res = await contract.functions[name](...Object.values(state));
       setResponse(res);
     } catch (err) {
+      console.log(err)
       setResponse(String(err.message));
     }
   };
@@ -47,22 +45,24 @@ const ContractFunction = ({
   useEffect(() => {});
   return (
     <div className={showFunction ? "hide-function-box" : "function-box"}>
-      <code className="func-name" onClick={() => alert("hey")}>
-        {name}
+      <code className="func-name" onClick={() => console.log(outputs)}>
+        {name} →{" "}
+         {parseOutputsJSX(outputs)}
       </code>
       <div className="function-collapse">
-        {inputs
-          ? <form>  {inputs.map((obj, i) => (
-             
-                <div className="function-arg" key={i}>
-                  <code>
-                    ({obj.type}) {obj.name}
-                  </code>
-                  <input onChange={handleInputChange} name={i}></input>
-                </div>
-              
-            )) }</form>
-          : null}
+        {inputs ? (
+          <form>
+            {" "}
+            {inputs.map((obj, i) => (
+              <div className="function-arg" key={i}>
+                <code>
+                  ({obj.type}) {obj.name}
+                </code>
+                <input onChange={handleInputChange} name={i}></input>
+              </div>
+            ))}
+          </form>
+        ) : null}
         <button onClick={callFunc}>Submit</button>
         {response !== "" ? (
           <p style={{ textAlign: "left" }}>{String(response)}</p>

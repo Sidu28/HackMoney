@@ -10,6 +10,9 @@ import {
 
 function App() {
   const [contractAddy, setContractAddy] = useState("");
+  const [network, setNetwork] = useState("mainnet");
+
+
 
   return (
     <div className="App">
@@ -23,7 +26,18 @@ function App() {
           placeholder="search any contract address"
         ></input>
       </div>
-      <Contract address={contractAddy} />
+        <label>
+          Select a network: 
+          <select value={network} onChange={(e) => setNetwork(e.target.value)}>
+            <option value="mainnet">Mainnet</option>
+            <option value="goerli">Goerli</option>
+            <option value="kovan">Kovan</option>
+            <option value="rinkeby">Rinkeby</option>
+            <option value="ropsten">Ropsten</option>
+
+          </select>
+        </label>
+      <Contract address={contractAddy} network={network}/>
     </div>
   );
 }

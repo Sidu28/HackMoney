@@ -6,7 +6,7 @@ import {
   getABIFunctions,
 } from "../util/interact.js";
 
-const Contract = ({ address }) => {
+const Contract = ({ address, network }) => {
   const [abi, setABI] = useState(null);
   const [functions, setFunctions] = useState(null);
   const [contractObj, setContract] = useState(null);
@@ -14,9 +14,9 @@ const Contract = ({ address }) => {
 
   const load = async () => {
     try {
-      const abiRes = await getContractABI(address);
+      const abiRes = await getContractABI(address, network);
       const funcRes = getABIFunctions(abiRes);
-      const contractRes = await initContract(address, abiRes);
+      const contractRes = await initContract(address, abiRes, network);
       setContract(contractRes)
       setABI(abiRes);
       setFunctions(funcRes);
