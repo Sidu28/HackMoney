@@ -1,10 +1,16 @@
 import axios from "axios";
 
-
 const { ethers } = require("ethers");
 
-export const getContractABI = async (address, network) => {
+const keyMap = {
+  mainnet: process.env.REACT_APP_ALCHEMY_MAINNET,
+  rinkeby: process.env.REACT_APP_ALCHEMY_RINKEBY,
+  ropsten: process.env.REACT_APP_ALCHEMY_ROPSTEN,
+  goerli: process.env.REACT_APP_ALCHEMY_GOERLI,
+  kovan: process.env.REACT_APP_ALCHEMY_KOVAN,
+};
 
+export const getContractABI = async (address, network) => {
   let req = `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=${process.env.REACT_APP_ETHERSCAN_KEY}`;
 
   if (network !== "mainnet") {
@@ -21,35 +27,12 @@ export const getABIFunctions = (abi) => {
 };
 
 export const initContract = async (address, abi, network) => {
-
-
-  const mapping = {
-    "mainnet": process.env.REACT_APP_ALCHEMY_MAINNET,
-    "rinkeby" : process.env.REACT_APP_ALCHEMY_RINKEBY,
-    "ropsten" : process.env.REACT_APP_ALCHEMY_ROPSTEN,
-    "goerli" : process.env.REACT_APP_ALCHEMY_GOERLI,
-    "kovan": process.env.REACT_APP_ALCHEMY_KOVAN
-  }
-  const key = mapping[network];
+  const key = keyMap[network];
   const alchemy = `https://eth-${network}.alchemyapi.io/v2/${key}`;
-  console.log(alchemy)
+  console.log(alchemy);
   const customProvider = new ethers.providers.JsonRpcProvider(alchemy);
   const contract = new ethers.Contract(address, abi, customProvider);
   return contract;
-
-  // const mapping = {
-  //   "mainnet": "MCkqdWaXvnh1tne6CEG6NXYQEhgA_B9Q",
-  //   "rinkeby" : "ElybgFn6H7hx1EfEsGvMKsD-psxb2gsy",
-  //   "ropsten" : "Zrit8evhI8bUxgmCIe9Yuw1nE28LK4-Z",
-  //   "goerli" : "qkOPUKaZ4CT4gtQSuJP5KS8NVsLxVnHO",
-  //   "kovan": "rif7Mgg8iXcTt54n4AG7ZfneepsWPtdn"
-  // }
-  // const key = mapping[network];
-  // const alchemy = `https://eth-${network}.alchemyapi.io/v2/${key}`;
-  // console.log(alchemy)
-  // const customProvider = new ethers.providers.JsonRpcProvider(alchemy);
-  // const contract = new ethers.Contract(address, abi, customProvider);
-  // return contract;
 };
 
 export const parseInputs = (inputs, ogInputs) => {
@@ -71,5 +54,26 @@ export const parseOutputsJSX = (outputs) => {
     });
     const result = str.slice(1, -1);
     return <span style={{ fontStyle: "italic" }}>({result})</span>;
+  }
+};
+
+
+export const getInternalTxns = async (txAddy, network, setMessage) => {
+
+  const key = keyMap[network];
+  const alchemy = `https://eth-${network}.alchemyapi.io/v2/${key}`;
+
+  try {
+    setMessage(`Making trace_transaction request for ${txAddy}...`);
+    const res = await axios.post(alchemy, {
+      jsonrpc: "2.0",
+      method: "trace_transaction",
+      params: [txAddy],
+      id: 1,
+    });
+    setMessage(`Finished trace_transaction`);
+    return res.data.result;
+  } catch (e) {
+    setMessage(e.message);
   }
 };

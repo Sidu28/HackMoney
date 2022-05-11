@@ -7,6 +7,7 @@ import {
   initContract,
   getABIFunctions,
 } from "./util/interact.js";
+import Internal from "./components/Internal";
 
 function App() {
   const [contractAddy, setContractAddy] = useState("");
@@ -16,6 +17,7 @@ function App() {
 
   return (
     <div className="App">
+      <Internal txID="0x9bad48f228fc2ca341a9b51598fb5246dc9ed61a0e6dd3d0555921b571514441" network={network} />
       <div className="search-bar">
         <h1>Contract address: </h1>
         <input
