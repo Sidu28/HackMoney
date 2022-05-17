@@ -10,6 +10,8 @@ const keyMap = {
   kovan: process.env.REACT_APP_ALCHEMY_KOVAN,
 };
 
+const downloadMetamask = "https://metamask.io/download.html";
+
 export const getContractABI = async (address, network) => {
   let req = `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=${process.env.REACT_APP_ETHERSCAN_KEY}`;
 
@@ -22,7 +24,7 @@ export const getContractABI = async (address, network) => {
 
 //TODO: go back, might be stripping arrays and such which we'll want to index into
 export const getABIFunctions = (abi) => {
-  const abijson = JSON.parse(abi).filter((elem) => elem.type == "function");
+  const abijson = JSON.parse(abi).filter((elem) => elem.type ==="function");
   return abijson;
 };
 
@@ -43,16 +45,26 @@ export const parseInputs = (inputs, ogInputs) => {
 };
 
 export const parseOutputsJSX = (outputs) => {
-  if (!outputs || outputs.length == 0) {
+  if (!outputs || outputs.length === 0) {
     return <span style={{ fontStyle: "italic" }}>(none)</span>;
   } else {
     let str = "";
+    // outputs.map((out) => {
+    //   out.name
+    //     ? (str = str + `${out.name} ${out.type},`)
+    //     : (str = str + `${out.name} ${out.type},`);
+    // });
+
     outputs.map((out) => {
-      out.name
-        ? (str = str + `${out.name} ${out.type},`)
-        : (str = str + `${out.name} ${out.type},`);
+        str = str + ` ${out.type},` 
     });
-    const result = str.slice(1, -1);
+
+
+    let result = str.slice(0, -1);
+    if (result.charAt(0) === " ") {
+      result = result.slice(1);
+    }
+
     return <span style={{ fontStyle: "italic" }}>({result})</span>;
   }
 };
@@ -75,5 +87,83 @@ export const getInternalTxns = async (txAddy, network, setMessage) => {
     return res.data.result;
   } catch (e) {
     setMessage(e.message);
+  }
+};
+
+export const connectWallet = async () => {
+  if (window.ethereum) {
+    try {
+      const addressArray = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      const obj = {
+        status: "👆🏽 Write a message in the text-field above.",
+        address: addressArray[0],
+      };
+      return obj;
+    } catch (err) {
+      return {
+        address: "",
+        status: "😥 " + err.message,
+      };
+    }
+  } else {
+    return {
+      address: "",
+      status: (
+        <span>
+          <p>
+            {" "}
+            🦊{" "}
+            <a target="_blank" href={downloadMetamask}>
+              You must install Metamask, a virtual Ethereum wallet, in your
+              browser.
+            </a>
+          </p>
+        </span>
+      ),
+    };
+  }
+};
+
+export const getCurrentWalletConnected = async () => {
+  if (window.ethereum) {
+    try {
+      const addressArray = await window.ethereum.request({
+        method: "eth_accounts",
+      });
+      if (addressArray.length > 0) {
+        return {
+          address: addressArray[0],
+          status: "👆🏽 Enter a contract address in the text-field above.",
+        };
+      } else {
+        return {
+          address: "",
+          status: "🦊 Connect to Metamask using the bottom right button.",
+        };
+      }
+    } catch (err) {
+      return {
+        address: "",
+        status: "😥 " + err.message,
+      };
+    }
+  } else {
+    return {
+      address: "",
+      status: (
+        <span>
+          <p>
+            {" "}
+            🦊{" "}
+            <a target="_blank" href={downloadMetamask}>
+              You must install Metamask, a virtual Ethereum wallet, in your
+              browser.
+            </a>
+          </p>
+        </span>
+      ),
+    };
   }
 };

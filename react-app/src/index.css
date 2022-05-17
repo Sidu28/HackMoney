@@ -21,17 +21,21 @@ code {
 .search-input {
   border: none;
   width: 400px;
-  font-size: 2em;
+  font-size: 1.5em;
   padding: none;
 }
 
 .function-box {
-  align-items: baseline;
-  padding: 8px;
+  padding: 16px;
   border: 1px lavender solid;
   margin: 8px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  max-width: 800px;
+  align-items: flex-start;
+  gap: 8px;
+ cursor: pointer;
+
 }
 
 .function-arg {
@@ -59,9 +63,6 @@ button:hover {
   cursor: pointer;
 }
 .function-collapse {
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
   margin-left: 16px;
   padding: 8px;
 }
@@ -75,3 +76,30 @@ button:hover {
 .args-box.expand {
   max-height: 250px;
 }
+
+.func-signature {
+  display: flex;
+  align-items:center;
+  gap: 8px
+}
+
+
+.star-button {
+  background-color: rgba(0, 0, 0, 0);
+  font-size: 1.5em;
+  padding: 0px;
+  line-height: 0px;
+ margin: 0px;
+}
+
+.left-align > * {
+  display: flex;
+  flex-direction: column;
+  align-items:flex-start; 
+  background-color:"orange";
+}
+
+.hide {
+  display: none;
+}
+

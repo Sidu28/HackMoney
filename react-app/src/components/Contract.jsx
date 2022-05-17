@@ -38,8 +38,8 @@ const Contract = ({ address, network }) => {
             {functions
               .filter(
                 (elem) =>
-                  elem.stateMutability == "pure" ||
-                  elem.stateMutability == "view"
+                  elem.stateMutability === "pure" ||
+                  elem.stateMutability === "view"
               )
               .map((obj, i) => (
                 <ContractFunction key={i} contract={contractObj} {...obj} />
