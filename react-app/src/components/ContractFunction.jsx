@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
-import { parseInputs, parseOutputsJSX } from "../util/interact.js";
-import { FaRegStar, FaStar } from "react-icons/fa";
+import {
+  parseInputs,
+  parseOutputsJSX,
+  writeFunction,
+} from "../util/interact.js";
+import StarButton from "./StarButton.jsx";
 //https://react-icons.github.io/react-icons
 
 const ContractFunction = ({
@@ -12,17 +16,21 @@ const ContractFunction = ({
   payable,
   stateMutability,
   type,
+  isRead,
 }) => {
   const [response, setResponse] = useState("");
   const [state, setState] = useState({});
 
   const callFunc = async () => {
     try {
-      //parse args
+      let res;
+      if (isRead) {
+        res = await contract.functions[name](...Object.values(state));
+      } else {
+        const res = await writeFunction(contract, name, state);
 
-      //   parseInputs(state, inputs)
-
-      const res = await contract.functions[name](...Object.values(state));
+        // res = await contract.functions[name](...Object.values(state));
+      }
       setResponse(res);
     } catch (err) {
       console.log(err);
@@ -53,9 +61,7 @@ const ContractFunction = ({
       onClick={() => setShowFunctions(true)}
     >
       {/* function sigantaure */}
-      <button className="star-button">
-        <FaRegStar />
-      </button>
+      <StarButton />
 
       <div className={`left-align`}>
         <code className="func-signature">
@@ -89,7 +95,7 @@ const ContractFunction = ({
             </form>
           ) : null}
           <button style={{}} onClick={callFunc}>
-            Submit
+            {isRead ? "Read" : "Write"}
           </button>
           {response !== "" ? (
             <p style={{ textAlign: "left", fontStyle: "italic" }}>

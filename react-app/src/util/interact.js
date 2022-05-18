@@ -24,14 +24,17 @@ export const getContractABI = async (address, network) => {
 
 //TODO: go back, might be stripping arrays and such which we'll want to index into
 export const getABIFunctions = (abi) => {
-  const abijson = JSON.parse(abi).filter((elem) => elem.type ==="function");
-  return abijson;
+  try {
+    const abijson = JSON.parse(abi).filter((elem) => elem.type === "function");
+    return abijson;
+  } catch {
+    return abi;
+  }
 };
 
 export const initContract = async (address, abi, network) => {
   const key = keyMap[network];
   const alchemy = `https://eth-${network}.alchemyapi.io/v2/${key}`;
-  console.log(alchemy);
   const customProvider = new ethers.providers.JsonRpcProvider(alchemy);
   const contract = new ethers.Contract(address, abi, customProvider);
   return contract;
@@ -39,8 +42,6 @@ export const initContract = async (address, abi, network) => {
 
 export const parseInputs = (inputs, ogInputs) => {
   if (ogInputs.size !== inputs.length) return;
-  console.log(ogInputs);
-  console.log(Object.values(inputs));
   return inputs.values;
 };
 
@@ -56,9 +57,8 @@ export const parseOutputsJSX = (outputs) => {
     // });
 
     outputs.map((out) => {
-        str = str + ` ${out.type},` 
+      str = str + ` ${out.type},`;
     });
-
 
     let result = str.slice(0, -1);
     if (result.charAt(0) === " ") {
@@ -69,9 +69,7 @@ export const parseOutputsJSX = (outputs) => {
   }
 };
 
-
 export const getInternalTxns = async (txAddy, network, setMessage) => {
-
   const key = keyMap[network];
   const alchemy = `https://eth-${network}.alchemyapi.io/v2/${key}`;
 
@@ -165,5 +163,18 @@ export const getCurrentWalletConnected = async () => {
         </span>
       ),
     };
+  }
+};
+
+export const writeFunction = async (contract, name, state) => {
+  try {
+    const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner(); // TODO, change so don't have to connect on each call
+    const newContract = contract.connect(signer);
+    const res = await newContract.functions[name](...Object.values(state))
+    return res;
+  } catch (e) {
+    console.log(e);
   }
 };

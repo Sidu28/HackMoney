@@ -6,7 +6,7 @@ import {
   getABIFunctions,
 } from "../util/interact.js";
 
-const Contract = ({ address, network }) => {
+const Contract = ({ address, network, setStatus }) => {
   const [abi, setABI] = useState(null);
   const [functions, setFunctions] = useState(null);
   const [contractObj, setContract] = useState(null);
@@ -15,13 +15,15 @@ const Contract = ({ address, network }) => {
   const load = async () => {
     try {
       const abiRes = await getContractABI(address, network);
+      setABI(abiRes);
       const funcRes = getABIFunctions(abiRes);
       const contractRes = await initContract(address, abiRes, network);
       setContract(contractRes)
-      setABI(abiRes);
       setFunctions(funcRes);
+      setStatus("");
     } catch (err) {
-      console.error(err.message);
+      setStatus(abi);
+      console.log(err)
     }
   };
 
@@ -42,7 +44,7 @@ const Contract = ({ address, network }) => {
                   elem.stateMutability === "view"
               )
               .map((obj, i) => (
-                <ContractFunction key={i} contract={contractObj} {...obj} />
+                <ContractFunction key={i} contract={contractObj} isRead={true} {...obj} />
               ))}
           </>
         ) : null}
@@ -59,7 +61,7 @@ const Contract = ({ address, network }) => {
                   elem.stateMutability !== "view"
               )
               .map((obj, i) => (
-                <ContractFunction key={i} contract={contractObj} {...obj}  />
+                <ContractFunction key={i} contract={contractObj} isRead={false} {...obj}  />
               ))}
           </>
         ) : null}

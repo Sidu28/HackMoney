@@ -100,7 +100,7 @@ function App() {
           <span>Connect Wallet</span>
         )}
       </button>
-      <Contract address={contractAddy} network={network} />
+      <Contract address={contractAddy} network={network} setStatus={setStatus} />
     </div>
   );
 }

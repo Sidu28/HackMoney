@@ -34,8 +34,8 @@ code {
   max-width: 800px;
   align-items: flex-start;
   gap: 8px;
- cursor: pointer;
-
+  cursor: pointer;
+  margin: auto;
 }
 
 .function-arg {
@@ -43,7 +43,6 @@ code {
   align-items: baseline;
   font-size: 0.9em;
 }
-
 
 .func-name {
   width: auto;
@@ -79,27 +78,25 @@ button:hover {
 
 .func-signature {
   display: flex;
-  align-items:center;
-  gap: 8px
+  align-items: center;
+  gap: 8px;
 }
-
 
 .star-button {
   background-color: rgba(0, 0, 0, 0);
   font-size: 1.5em;
   padding: 0px;
   line-height: 0px;
- margin: 0px;
+  margin: 0px;
 }
 
 .left-align > * {
   display: flex;
   flex-direction: column;
-  align-items:flex-start; 
-  background-color:"orange";
+  align-items: flex-start;
+  background-color: "orange";
 }
 
 .hide {
   display: none;
 }
-
