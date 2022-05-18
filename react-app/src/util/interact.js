@@ -173,8 +173,10 @@ export const writeFunction = async (contract, name, state) => {
     const signer = provider.getSigner(); // TODO, change so don't have to connect on each call
     const newContract = contract.connect(signer);
     const res = await newContract.functions[name](...Object.values(state))
+    console.log(res)
     return res;
   } catch (e) {
     console.log(e);
+    return e
   }
 };

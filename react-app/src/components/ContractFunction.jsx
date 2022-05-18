@@ -27,11 +27,9 @@ const ContractFunction = ({
       if (isRead) {
         res = await contract.functions[name](...Object.values(state));
       } else {
-        const res = await writeFunction(contract, name, state);
-
-        // res = await contract.functions[name](...Object.values(state));
+        res = await writeFunction(contract, name, state);
       }
-      setResponse(res);
+      setResponse(`Transaction hash ${res.hash}`);
     } catch (err) {
       console.log(err);
       setResponse(String(err.message));
