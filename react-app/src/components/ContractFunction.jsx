@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   parseInputs,
   parseOutputsJSX,
@@ -27,7 +27,6 @@ const ContractFunction = ({
       if (isRead) {
         res = await contract.functions[name](...Object.values(state));
         setResponse(res);
-
       } else {
         res = await writeFunction(contract, name, state);
         setResponse(`Transaction hash ${res.hash}`);
@@ -39,9 +38,8 @@ const ContractFunction = ({
     }
   };
 
-  //   useEffect(() => {
-  //     console.log(state);
-  //   }, [state]);
+    // useEffect(() => {
+    // }, [contract]);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -53,7 +51,6 @@ const ContractFunction = ({
 
   const [showFunction, setShowFunctions] = useState(false);
   // {constant, inputs, name, outputs, payable, stateMutability, type}
-  useEffect(() => {});
   return (
     <div
       className={`contract-function-div ${
@@ -109,31 +106,5 @@ const ContractFunction = ({
   );
 };
 
-// <div className={showFunction ? "hide-function-box" : "function-box"}>
-// <code className="func-name" onClick={() => console.log(outputs)}>
-//   {name} → {parseOutputsJSX(outputs)}
-// </code>
-// <div className="function-collapse">
-//   {inputs ? (
-//     <form>
-//       {" "}
-//       {inputs.map((obj, i) => (
-//         <div className="function-arg" key={i}>
-//           <code>
-//             ({obj.type}) {obj.name}
-//           </code>
-//           <input onChange={handleInputChange} name={i}></input>
-//         </div>
-//       ))}
-//     </form>
-//   ) : null}
-//   <button onClick={callFunc}>Submit</button>
-//   {response !== "" ? (
-//     <p style={{ textAlign: "left", fontStyle: "italic" }}>
-//       Returned: {String(response)}
-//     </p>
-//   ) : null}
-// </div>
-// </div>
 
 export default ContractFunction;

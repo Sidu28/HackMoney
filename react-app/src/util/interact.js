@@ -166,13 +166,13 @@ export const getCurrentWalletConnected = async () => {
   }
 };
 
-export const writeFunction = async (contract, name, state) => {
+export const writeFunction = async (contract, funcName, state) => {
   try {
     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
     await provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner(); // TODO, change so don't have to connect on each call
     const newContract = contract.connect(signer);
-    const res = await newContract.functions[name](...Object.values(state))
+    const res = await newContract.functions[funcName](...Object.values(state))
     console.log(res)
     return res;
   } catch (e) {

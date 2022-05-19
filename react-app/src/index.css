@@ -7,6 +7,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.App {
+  max-width: 800px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
@@ -15,13 +22,14 @@ code {
 .search-bar {
   display: flex;
   gap: 8px;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: baseline;
 }
 
 .search-input {
-  border: none;
-  width: 400px;
-  font-size: 1.5em;
+  /* border: none; */
+  display: flex;
+  width: 320px;
   padding: none;
 }
 
@@ -31,7 +39,6 @@ code {
   margin: 8px;
   display: flex;
   flex-direction: row;
-  max-width: 800px;
   align-items: flex-start;
   gap: 8px;
   cursor: pointer;
@@ -49,11 +56,17 @@ code {
   background-color: lavender;
 }
 
+#walletButton {
+  justify-content: flex-end;
+}
+
 button {
   background-color: lavender;
   border: none;
   padding: 6px 16px;
   margin-top: 16px;
+  margin-bottom: 16px;
+
   border-radius: 2px;
 }
 
@@ -94,7 +107,6 @@ button:hover {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  background-color: "orange";
 }
 
 .hide {

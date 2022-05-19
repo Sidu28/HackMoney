@@ -22,18 +22,24 @@ const Contract = ({ address, network, setStatus }) => {
       setFunctions(funcRes);
       setStatus("");
     } catch (err) {
-      setStatus(abi);
+      setABI(null);
+      setContract(null)
+      setFunctions(null)
+      setStatus(err.message);
       console.log(err)
     }
   };
 
   useEffect(() => {
     load();
-  }, [address]); // includes empty dependency array
+    // console.log()
+    // console.log(address)
+    // console.log(network)
+  }, [address, network]); // includes empty dependency array
 
   return (
     <>
-      <ol>
+      <div>
         {functions ? (
           <>
             <h2>Read functions</h2>
@@ -48,9 +54,9 @@ const Contract = ({ address, network, setStatus }) => {
               ))}
           </>
         ) : null}
-      </ol>
+      </div>
 
-      <ol>
+      <div>
         {functions ? (
           <>
             <h2>Write functions</h2>
@@ -65,7 +71,7 @@ const Contract = ({ address, network, setStatus }) => {
               ))}
           </>
         ) : null}
-      </ol>
+      </div>
     </>
   );
 };
