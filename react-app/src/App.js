@@ -1,14 +1,8 @@
-import Contract from "./components/Contract";
-import { useState, useEffect } from "react";
-import {
-  getContractABI,
-  initContract,
-  getABIFunctions,
-} from "./util/interact.js";
-import Internal from "./components/Internal";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import WalletButton from "./components/WalletButton";
-import SearchContractBar from "./components/SearchContractBar";
+import ContractView from "./components/ContractView";
+import EditView from "./components/EditView";
 
 function App() {
   const [contractAddy, setContractAddy] = useState("");
@@ -21,26 +15,43 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {/* <Internal txID="0x9bad48f228fc2ca341a9b51598fb5246dc9ed61a0e6dd3d0555921b571514441" network={network} /> */}
         <WalletButton
           walletAddress={walletAddress}
           setWallet={setWallet}
           setStatus={setStatus}
         />
 
-        <SearchContractBar
-          contractAddy={contractAddy}
-          setContractAddy={setContractAddy}
-          network={network}
-          setNetwork={setNetwork}
-        />
-        <Contract
-          address={contractAddy}
-          network={network}
-          setStatus={setStatus}
-        />
-        <span style={{textAlign:"center", padding: "50px", color:"grey"}}>{status}</span>
-
+        {/* TODO: look into <Link to=""> to prevent extra server reqs with routing: https://www.youtube.com/watch?v=DO-pSysGItQ */}
+        <Routes>
+          <Route
+            exact
+            path="/"
+            element={
+              <ContractView
+                contractAddy={contractAddy}
+                setContractAddy={setContractAddy}
+                network={network}
+                setNetwork={setNetwork}
+                setStatus={setStatus}
+                status={status}
+              />
+            }
+          />
+          <Route
+            exact
+            path="/edit/:id"
+            element={
+              <EditView
+                contractAddy={contractAddy}
+                setContractAddy={setContractAddy}
+                network={network}
+                setNetwork={setNetwork}
+                setStatus={setStatus}
+                status={status}
+              />
+            }
+          />
+        </Routes>
       </div>
     </Router>
   );

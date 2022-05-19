@@ -28,7 +28,9 @@ export const getABIFunctions = (abi) => {
     const abijson = JSON.parse(abi).filter((elem) => elem.type === "function");
     return abijson;
   } catch {
-    return abi;
+    const e = new Error(String(abi));
+    e.name = "FunctionError";
+    throw e;
   }
 };
 
@@ -95,7 +97,7 @@ export const connectWallet = async () => {
         method: "eth_requestAccounts",
       });
       const obj = {
-        status: "👆🏽 Write a message in the text-field above.",
+        status: "👆🏽 Enter a contract address in the text-field above.",
         address: addressArray[0],
       };
       return obj;
@@ -172,11 +174,11 @@ export const writeFunction = async (contract, funcName, state) => {
     await provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner(); // TODO, change so don't have to connect on each call
     const newContract = contract.connect(signer);
-    const res = await newContract.functions[funcName](...Object.values(state))
-    console.log(res)
+    const res = await newContract.functions[funcName](...Object.values(state));
+    console.log(res);
     return res;
   } catch (e) {
     console.log(e);
-    return e
+    return e;
   }
 };

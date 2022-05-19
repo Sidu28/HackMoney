@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   parseInputs,
   parseOutputsJSX,
@@ -30,7 +31,6 @@ const ContractFunction = ({
       } else {
         res = await writeFunction(contract, name, state);
         setResponse(`Transaction hash ${res.hash}`);
-
       }
     } catch (err) {
       console.log(err);
@@ -38,8 +38,8 @@ const ContractFunction = ({
     }
   };
 
-    // useEffect(() => {
-    // }, [contract]);
+  // useEffect(() => {
+  // }, [contract]);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -50,7 +50,6 @@ const ContractFunction = ({
   };
 
   const [showFunction, setShowFunctions] = useState(false);
-  // {constant, inputs, name, outputs, payable, stateMutability, type}
   return (
     <div
       className={`contract-function-div ${
@@ -61,9 +60,8 @@ const ContractFunction = ({
       {/* function sigantaure */}
       <StarButton />
 
-      <div className={`left-align`}>
+      <div className={`left-align function-container`}>
         <code className="func-signature">
-          {/* function name */}
           <div>
             <span style={{ fontWeight: "800" }}>{name}</span>
             {/* {inputs.map((obj, i) => (
@@ -77,7 +75,7 @@ const ContractFunction = ({
         <div style={{ color: "grey" }}>some longg ass description</div>
 
         {/* function inputs for read/write */}
-        <div className={`left-align ${showFunction ? `show` : "hide"}`}>
+        <div className={`left-align ${showFunction ? `show` : "hide"} `}>
           {inputs ? (
             <form>
               {" "}
@@ -87,14 +85,28 @@ const ContractFunction = ({
                     ({obj.type}) {obj.name}
                   </code>
                   <input onChange={handleInputChange} name={i}></input>
-                  {/* <textarea>hello</textarea> */}
                 </div>
               ))}
             </form>
           ) : null}
-          <button style={{}} onClick={callFunc}>
-            {isRead ? "Read" : "Write"}
-          </button>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
+              flexDirection: "row",
+              gap: "8px",
+            }}
+          >
+            <button style={{}} onClick={callFunc}>
+              {isRead ? "Read" : "Write"}
+            </button>
+            <Link to={`/edit/1`}>
+              <button>Suggest</button>
+            </Link>
+          </div>
+
           {response !== "" ? (
             <p style={{ textAlign: "left", fontStyle: "italic" }}>
               Returned: {String(response)}
@@ -105,6 +117,5 @@ const ContractFunction = ({
     </div>
   );
 };
-
 
 export default ContractFunction;

@@ -24,6 +24,7 @@ code {
   gap: 8px;
   justify-content: flex-start;
   align-items: baseline;
+  padding: 8px 0px;
 }
 
 .search-input {
@@ -34,15 +35,12 @@ code {
 }
 
 .function-box {
-  padding: 16px;
   border: 1px lavender solid;
-  margin: 8px;
+  margin: 8px 0px;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 8px;
   cursor: pointer;
-  margin: auto;
 }
 
 .function-arg {
@@ -65,9 +63,11 @@ button {
   border: none;
   padding: 6px 16px;
   margin-top: 16px;
-  margin-bottom: 16px;
-
   border-radius: 2px;
+}
+
+.star-div {
+ display: flex;
 }
 
 button:hover {
@@ -89,6 +89,11 @@ button:hover {
   max-height: 250px;
 }
 
+.function-container {
+  padding: 8px 0px 4px 0px;
+
+}
+
 .func-signature {
   display: flex;
   align-items: center;
@@ -98,9 +103,10 @@ button:hover {
 .star-button {
   background-color: rgba(0, 0, 0, 0);
   font-size: 1.5em;
-  padding: 0px;
+  padding: 8px;
   line-height: 0px;
   margin: 0px;
+
 }
 
 .left-align > * {
@@ -108,6 +114,7 @@ button:hover {
   flex-direction: column;
   align-items: flex-start;
 }
+
 
 .hide {
   display: none;

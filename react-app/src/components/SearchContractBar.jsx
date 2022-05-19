@@ -4,6 +4,12 @@ const SearchContractBar = ({
   network,
   setNetwork,
 }) => {
+
+  const updateAddy = (e) => {
+    if (e.key === 'Enter') {
+
+    }
+  }
   return (
     <div className="search-bar">
       <div className="left-align" style={{ display: "flex", gap: "8px" }}>

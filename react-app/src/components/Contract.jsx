@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import ContractFunction from "./ContractFunction.jsx";
 import {
   getContractABI,
@@ -6,11 +6,10 @@ import {
   getABIFunctions,
 } from "../util/interact.js";
 
-const Contract = ({ address, network, setStatus }) => {
+const Contract = ({ address, network, setStatus, status }) => {
   const [abi, setABI] = useState(null);
   const [functions, setFunctions] = useState(null);
   const [contractObj, setContract] = useState(null);
-
 
   const load = async () => {
     try {
@@ -18,15 +17,15 @@ const Contract = ({ address, network, setStatus }) => {
       setABI(abiRes);
       const funcRes = getABIFunctions(abiRes);
       const contractRes = await initContract(address, abiRes, network);
-      setContract(contractRes)
+      setContract(contractRes);
       setFunctions(funcRes);
       setStatus("");
     } catch (err) {
       setABI(null);
-      setContract(null)
-      setFunctions(null)
+      setContract(null);
+      setFunctions(null);
       setStatus(err.message);
-      console.log(err)
+      console.log(err);
     }
   };
 
@@ -40,6 +39,19 @@ const Contract = ({ address, network, setStatus }) => {
   return (
     <>
       <div>
+        {status ? (
+          <p
+            style={{
+              margin: "auto",
+              textAlign: "center",
+              padding: "30px",
+              color: "grey",
+            }}
+          >
+            {status}
+          </p>
+        ) : null}
+
         {functions ? (
           <>
             <h2>Read functions</h2>
@@ -50,7 +62,12 @@ const Contract = ({ address, network, setStatus }) => {
                   elem.stateMutability === "view"
               )
               .map((obj, i) => (
-                <ContractFunction key={i} contract={contractObj} isRead={true} {...obj} />
+                <ContractFunction
+                  key={i}
+                  contract={contractObj}
+                  isRead={true}
+                  {...obj}
+                />
               ))}
           </>
         ) : null}
@@ -67,7 +84,12 @@ const Contract = ({ address, network, setStatus }) => {
                   elem.stateMutability !== "view"
               )
               .map((obj, i) => (
-                <ContractFunction key={i} contract={contractObj} isRead={false} {...obj}  />
+                <ContractFunction
+                  key={i}
+                  contract={contractObj}
+                  isRead={false}
+                  {...obj}
+                />
               ))}
           </>
         ) : null}
