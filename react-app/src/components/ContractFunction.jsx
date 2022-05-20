@@ -4,8 +4,6 @@ import {
   parseInputs,
   parseOutputsJSX,
   writeFunction,
-  setDescription,
-  getDescription
 } from "../util/interact.js";
 import StarButton from "./StarButton.jsx";
 
@@ -19,6 +17,7 @@ const ContractFunction = ({
   stateMutability,
   type,
   isRead,
+  description,
 }) => {
   const [response, setResponse] = useState("");
   const [state, setState] = useState({});
@@ -39,27 +38,6 @@ const ContractFunction = ({
     }
   };
 
-  const setDesc = async () => {
-    try {
-      setDescription("hello", "world");
-    } catch (err) {
-      console.log(err);
-      setResponse(String(err.message));
-    }
-  };
-
-  const getDesc = async () => {
-    try {
-      let res;
-      res = getDescription("hello", "world");
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-      setResponse(String(err.message));
-    }
-  };
-
-  console.log(getDesc())
 
   // useEffect(() => {
   // }, [contract]);
@@ -96,7 +74,7 @@ const ContractFunction = ({
           </div>
         </code>
         <div className="description" style={{ color: "grey" }}>
-          some longg ass description
+          {description ? description : "No description found"}
         </div>
 
         {/* function inputs for read/write */}

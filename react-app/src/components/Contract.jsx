@@ -29,6 +29,10 @@ const Contract = ({ address, network, setStatus, status }) => {
     }
   };
 
+  const fetchDescriptions = async() => {
+    return null;
+  }
+
   useEffect(() => {
     load();
     // console.log()
@@ -79,6 +83,7 @@ const Contract = ({ address, network, setStatus, status }) => {
                   obj.stateMutability === "pure" ||
                   obj.stateMutability === "view"
                 }
+                description={null}
                 {...obj}
               />
             ))}
