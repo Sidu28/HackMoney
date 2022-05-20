@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import WalletButton from "./components/WalletButton";
-import ContractView from "./components/ContractView";
+import Contract from "./components/Contract";
 import EditView from "./components/EditView";
 import SearchContractBar from "./components/SearchContractBar";
 
@@ -35,11 +35,9 @@ function App() {
             exact
             path="/"
             element={
-              <ContractView
-                contractAddy={contractAddy}
-                setContractAddy={setContractAddy}
+              <Contract
+                address={contractAddy}
                 network={network}
-                setNetwork={setNetwork}
                 setStatus={setStatus}
                 status={status}
               />

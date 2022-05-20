@@ -68,28 +68,6 @@ const Contract = ({ address, network, setStatus, status }) => {
           </>
         ) : null}
       </div>
-
-      {/* <div>
-        {functions ? (
-          <>
-            <h2>Write functions</h2>
-            {functions
-              .filter(
-                (elem) =>
-                  elem.stateMutability !== "pure" &&
-                  elem.stateMutability !== "view"
-              )
-              .map((obj, i) => (
-                <ContractFunction
-                  key={i}
-                  contract={contractObj}
-                  isRead={false}
-                  {...obj}
-                />
-              ))}
-          </>
-        ) : null}
-      </div> */}
     </>
   );
 };

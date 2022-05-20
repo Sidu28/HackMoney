@@ -70,6 +70,8 @@ code {
 
 #walletButton {
   justify-content: flex-end;
+  background-color: darkslateblue;
+  color: white;
 }
 
 button {
