@@ -1,4 +1,7 @@
 import axios from "axios";
+import { initializeApp } from 'firebase/app';
+import { getAnalytics } from "firebase/analytics";
+import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 
 const { ethers } = require("ethers");
 
@@ -10,7 +13,24 @@ const keyMap = {
   kovan: process.env.REACT_APP_ALCHEMY_KOVAN,
 };
 
+console.log("API KEY", process.env.REACT_APP_ETHERSCAN_KEY)
+
 const downloadMetamask = "https://metamask.io/download.html";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDZXeUzRW4EGzjr2PJMLVZdyuSxTncSGzE",
+  authDomain: "hackmoney-6ef38.firebaseapp.com",
+  projectId: "hackmoney-6ef38",
+  storageBucket: "hackmoney-6ef38.appspot.com",
+  messagingSenderId: "703593056992",
+  appId: "1:703593056992:web:137854bf0299b2436a9e85",
+  measurementId: "G-T8FP3JZE4J"
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
 
 export const getContractABI = async (address, network) => {
   let req = `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=${process.env.REACT_APP_ETHERSCAN_KEY}`;
@@ -182,3 +202,39 @@ export const writeFunction = async (contract, funcName, state) => {
     return e;
   }
 };
+
+export const setDescription = async(contractAddress, funcHeader, descr) =>{
+  try {
+    const databaseHash = ethers.utils.id(contractAddress.concat("", funcHeader));
+    var functionDescriptions = db.collection("function descriptions");
+
+    functionDescriptions.doc(databaseHash).set({
+        description: descr
+    });
+
+  } catch (e) {
+    console.log(e);
+    return e;
+  }
+
+}
+
+export const getDescription = async(contractAddress, funcHeader) =>{
+    const databaseHash = ethers.utils.id(contractAddress.concat("", funcHeader));
+    var functionDescriptions = db.collection("function descriptions").doc(databaseHash);
+
+    functionDescriptions.get().then((doc) => {
+      if (doc.exists) {
+          console.log("Document data:", doc.data());
+          return doc.data();
+      } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+      }
+  }).catch((error) => {
+      console.log("Error getting document:", error);
+  });
+
+}
+
+

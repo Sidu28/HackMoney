@@ -4,6 +4,8 @@ import {
   parseInputs,
   parseOutputsJSX,
   writeFunction,
+  setDescription,
+  getDescription
 } from "../util/interact.js";
 import StarButton from "./StarButton.jsx";
 //https://react-icons.github.io/react-icons
@@ -37,6 +39,28 @@ const ContractFunction = ({
       setResponse(String(err.message));
     }
   };
+
+  const setDesc = async () => {
+    try {
+      setDescription("hello", "world");
+    } catch (err) {
+      console.log(err);
+      setResponse(String(err.message));
+    }
+  };
+
+  const getDesc = async () => {
+    try {
+      let res;
+      res = getDescription("hello", "world");
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+      setResponse(String(err.message));
+    }
+  };
+
+  console.log(getDesc())
 
   // useEffect(() => {
   // }, [contract]);
