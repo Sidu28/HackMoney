@@ -4,12 +4,14 @@ import {
   getContractABI,
   initContract,
   getABIFunctions,
+  getContractDescription,
 } from "../util/interact.js";
 
 const Contract = ({ address, network, setStatus, status }) => {
   const [abi, setABI] = useState(null);
   const [functions, setFunctions] = useState(null);
   const [contractObj, setContract] = useState(null);
+  const [funcDescr, setFuncDescr] = useState(null);
 
   const load = async () => {
     try {
@@ -17,6 +19,8 @@ const Contract = ({ address, network, setStatus, status }) => {
       setABI(abiRes);
       const funcRes = getABIFunctions(abiRes);
       const contractRes = await initContract(address, abiRes, network);
+      const funcDescr = await getContractDescription(address);
+      setFuncDescr(funcDescr);
       setContract(contractRes);
       setFunctions(funcRes);
       setStatus("");
@@ -28,10 +32,6 @@ const Contract = ({ address, network, setStatus, status }) => {
       console.log(err);
     }
   };
-
-  const fetchDescriptions = async() => {
-    return null;
-  }
 
   useEffect(() => {
     load();
@@ -83,7 +83,7 @@ const Contract = ({ address, network, setStatus, status }) => {
                   obj.stateMutability === "pure" ||
                   obj.stateMutability === "view"
                 }
-                description={null}
+                description={funcDescr}
                 {...obj}
               />
             ))}

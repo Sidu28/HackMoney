@@ -1,7 +1,8 @@
 import axios from "axios";
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+import { getDatabase, ref, onValue, set} from "firebase/database";
+import { getFirestore, collection, getDocs} from 'firebase/firestore/lite';
 
 const { ethers } = require("ethers");
 
@@ -21,6 +22,7 @@ const downloadMetamask = "https://metamask.io/download.html";
 const firebaseConfig = {
   apiKey: "AIzaSyDZXeUzRW4EGzjr2PJMLVZdyuSxTncSGzE",
   authDomain: "hackmoney-6ef38.firebaseapp.com",
+  databaseURL: "https://hackmoney-6ef38-default-rtdb.firebaseio.com/",
   projectId: "hackmoney-6ef38",
   storageBucket: "hackmoney-6ef38.appspot.com",
   messagingSenderId: "703593056992",
@@ -29,8 +31,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore(app);
+const db = getDatabase(app);
 
 export const getContractABI = async (address, network) => {
   let req = `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=${process.env.REACT_APP_ETHERSCAN_KEY}`;
@@ -46,6 +47,7 @@ export const getContractABI = async (address, network) => {
 export const getABIFunctions = (abi) => {
   try {
     const abijson = JSON.parse(abi).filter((elem) => elem.type === "function");
+    console.log(abijson);
     return abijson;
   } catch {
     const e = new Error(String(abi));
@@ -203,38 +205,24 @@ export const writeFunction = async (contract, funcName, state) => {
   }
 };
 
-export const setDescription = async(contractAddress, funcHeader, descr) =>{
-  try {
-    const databaseHash = ethers.utils.id(contractAddress.concat("", funcHeader));
-    var functionDescriptions = db.collection("function descriptions");
 
-    functionDescriptions.doc(databaseHash).set({
-        description: descr
-    });
-
-  } catch (e) {
-    console.log(e);
-    return e;
-  }
-
+export const setDescription = async(contractAddress, descr) =>{
+  set(ref(db, contractAddress), {
+    description: descr
+  });
 }
 
-export const getDescription = async(contractAddress, funcHeader) =>{
-    const databaseHash = ethers.utils.id(contractAddress.concat("", funcHeader));
-    var functionDescriptions = db.collection("function descriptions").doc(databaseHash);
+export const getContractDescription = async(contractAddress) =>{
+    set(ref(db, contractAddress), {
+      name: "Lending Pool AAve"
+    });
+    var funcDescrRef = ref(db, contractAddress);
 
-    functionDescriptions.get().then((doc) => {
-      if (doc.exists) {
-          console.log("Document data:", doc.data());
-          return doc.data();
-      } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-      }
-  }).catch((error) => {
-      console.log("Error getting document:", error);
-  });
-
+    let data;
+    onValue(funcDescrRef, (snapshot) => {
+      data = snapshot.val();
+    });
+    return data.name
 }
 
 
