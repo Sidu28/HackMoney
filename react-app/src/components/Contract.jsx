@@ -52,19 +52,36 @@ const Contract = ({ address, network, setStatus, status }) => {
           </p>
         ) : null}
 
+        <div className="contract-banner">
+          <h2>EpicArt (0xbe59...cd0)</h2>
+          <div>
+            <p>
+              ✏️ Creator:{" "}
+              <span style={{ fontWeight: "bold" }}>
+                0xbe59794dd2101b6f4313a28c0c2b99eae4c92cd0
+              </span>
+            </p>
+            <p>
+              💰 Bounty: <span style={{ fontWeight: "bold" }}>10 ETH</span>
+            </p>
+            <p>TODO: ask Sid what is relevant here</p>
+          </div>
+        </div>
+
         {functions ? (
           <>
-            <h2>Functions</h2>
-            {functions
-              .map((obj, i) => (
-                <ContractFunction
-                  key={i}
-                  contract={contractObj}
-                  isRead={obj.stateMutability === "pure" ||
-                  obj.stateMutability === "view"}
-                  {...obj}
-                />
-              ))}
+            {/* <h2>Functions</h2> */}
+            {functions.map((obj, i) => (
+              <ContractFunction
+                key={i}
+                contract={contractObj}
+                isRead={
+                  obj.stateMutability === "pure" ||
+                  obj.stateMutability === "view"
+                }
+                {...obj}
+              />
+            ))}
           </>
         ) : null}
       </div>

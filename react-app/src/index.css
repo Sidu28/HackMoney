@@ -48,6 +48,12 @@ code {
   font: inherit;
 }
 
+.contract-banner {
+  background-color: lavender;
+  color: darkslateblue;
+  padding: 8px;
+}
+
 .function-box {
   border: 1px lavender solid;
   margin: 8px 0px;
