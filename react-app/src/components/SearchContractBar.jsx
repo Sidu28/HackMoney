@@ -4,16 +4,14 @@ const SearchContractBar = ({
   network,
   setNetwork,
 }) => {
-
   const updateAddy = (e) => {
-    if (e.key === 'Enter') {
-
+    if (e.key === "Enter") {
     }
-  }
+  };
   return (
     <div className="search-bar">
-      <div className="left-align" style={{ display: "flex", gap: "8px" }}>
-        <span>Contract address: </span>
+      <div  style={{ display: "flex", gap: "8px" }}>
+        <span>🔍</span>
         <input
           autoFocus="autofocus"
           className="search-input"
@@ -22,9 +20,13 @@ const SearchContractBar = ({
           placeholder="search any contract address"
         ></input>
       </div>
-      <div className="left-align"  style={{ display: "flex", gap: "8px" }}>
-        <span>Network:</span>
-        <select value={network} onChange={(e) => setNetwork(e.target.value)}>
+      <div style={{ display: "flex", gap: "8px" }}>
+        <span>on</span>
+        <select
+          className="network-select"
+          value={network}
+          onChange={(e) => setNetwork(e.target.value)}
+        >
           <option value="mainnet">Mainnet</option>
           <option value="goerli">Goerli</option>
           <option value="kovan">Kovan</option>

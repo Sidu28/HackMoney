@@ -10,20 +10,12 @@ const ContractView = ({
   status,
 }) => {
   return (
-    <>
-      <SearchContractBar
-        contractAddy={contractAddy}
-        setContractAddy={setContractAddy}
-        network={network}
-        setNetwork={setNetwork}
-      />
       <Contract
         address={contractAddy}
         network={network}
         setStatus={setStatus}
         status={status}
       />
-    </>
   );
 };
 

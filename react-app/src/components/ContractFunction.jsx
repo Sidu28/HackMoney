@@ -6,7 +6,6 @@ import {
   writeFunction,
 } from "../util/interact.js";
 import StarButton from "./StarButton.jsx";
-//https://react-icons.github.io/react-icons
 
 const ContractFunction = ({
   contract,
@@ -72,7 +71,9 @@ const ContractFunction = ({
             → {parseOutputsJSX(outputs)}
           </div>
         </code>
-        <div style={{ color: "grey" }}>some longg ass description</div>
+        <div className="description" style={{ color: "grey" }}>
+          some longg ass description
+        </div>
 
         {/* function inputs for read/write */}
         <div className={`left-align ${showFunction ? `show` : "hide"} `}>
@@ -89,7 +90,11 @@ const ContractFunction = ({
               ))}
             </form>
           ) : null}
-
+          {response !== "" ? (
+            <p style={{ textAlign: "left", fontStyle: "italic" }}>
+              Returned: {String(response)}
+            </p>
+          ) : null}
           <div
             style={{
               display: "flex",
@@ -106,14 +111,9 @@ const ContractFunction = ({
               <button>Suggest</button>
             </Link>
           </div>
-
-          {response !== "" ? (
-            <p style={{ textAlign: "left", fontStyle: "italic" }}>
-              Returned: {String(response)}
-            </p>
-          ) : null}
         </div>
       </div>
+      <p className="tiny-text tag">{isRead ? `Read 📖` : `Write 📝`}</p>
     </div>
   );
 };

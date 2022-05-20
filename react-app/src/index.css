@@ -5,13 +5,21 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size:16px;
 }
+
 
 .App {
   max-width: 800px;
   margin: auto;
   display: flex;
   flex-direction: column;
+}
+
+.navbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
 }
 
 code {
@@ -22,7 +30,7 @@ code {
 .search-bar {
   display: flex;
   gap: 8px;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: baseline;
   padding: 8px 0px;
 }
@@ -30,8 +38,14 @@ code {
 .search-input {
   /* border: none; */
   display: flex;
-  width: 320px;
+  min-width: 400px;
+  flex-grow: 1;
   padding: none;
+  font: inherit;
+}
+
+.network-select {
+  font: inherit;
 }
 
 .function-box {
@@ -67,7 +81,9 @@ button {
 }
 
 .star-div {
- display: flex;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 button:hover {
@@ -90,8 +106,7 @@ button:hover {
 }
 
 .function-container {
-  padding: 8px 0px 4px 0px;
-
+  padding: 8px 8px 4px 0px;
 }
 
 .func-signature {
@@ -106,7 +121,7 @@ button:hover {
   padding: 8px;
   line-height: 0px;
   margin: 0px;
-
+  color: darkslateblue;
 }
 
 .left-align > * {
@@ -115,7 +130,44 @@ button:hover {
   align-items: flex-start;
 }
 
-
 .hide {
   display: none;
+}
+
+.edit-view {
+  border: 1px lavender solid;
+  margin: 8px 0px;
+  padding: 16px;
+}
+
+.MDE-div {
+  padding: 16px 0px;
+  display: flex;
+}
+.MDE-div textarea {
+  min-height: 100px;
+  border: 1px lavender solid;
+  padding: 8px;
+  font: inherit;
+  flex-grow: 1;
+}
+
+.tiny-text {
+  font-size: 12px;
+  line-height: 0px;
+  color: grey;
+}
+
+.description {
+  line-height: 24px;
+}
+
+.tag {
+  background-color: lavender;
+  color:grey;
+  padding: 8px;
+  border-radius: 8px;
+  margin: 9px 8px 0px 0px;
+  flex-shrink: 0;
+  margin-left: auto;
 }
