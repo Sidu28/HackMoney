@@ -52,7 +52,6 @@ const WalletButton = ({ walletAddress, setWallet, setStatus }) => {
   return (
     <button id="walletButton" onClick={connectWalletPressed}>
       {walletAddress.length > 0 ? (
-        "Connected: " +
         String(walletAddress).substring(0, 6) +
         "..." +
         String(walletAddress).substring(38)

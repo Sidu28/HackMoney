@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import WalletButton from "./components/WalletButton";
-import ContractView from "./components/ContractView";
+import Contract from "./components/Contract";
 import EditView from "./components/EditView";
+import SearchContractBar from "./components/SearchContractBar";
 
 function App() {
   const [contractAddy, setContractAddy] = useState("");
@@ -15,23 +16,28 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <WalletButton
-          walletAddress={walletAddress}
-          setWallet={setWallet}
-          setStatus={setStatus}
-        />
-
+        <div className="navbar">
+          <SearchContractBar
+            contractAddy={contractAddy}
+            setContractAddy={setContractAddy}
+            network={network}
+            setNetwork={setNetwork}
+          />
+          <WalletButton
+            walletAddress={walletAddress}
+            setWallet={setWallet}
+            setStatus={setStatus}
+          />
+        </div>
         {/* TODO: look into <Link to=""> to prevent extra server reqs with routing: https://www.youtube.com/watch?v=DO-pSysGItQ */}
         <Routes>
           <Route
             exact
             path="/"
             element={
-              <ContractView
-                contractAddy={contractAddy}
-                setContractAddy={setContractAddy}
+              <Contract
+                address={contractAddy}
                 network={network}
-                setNetwork={setNetwork}
                 setStatus={setStatus}
                 status={status}
               />
