@@ -1,7 +1,7 @@
 import axios from "axios";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getDatabase, ref, onValue, set} from "firebase/database";
+import { getDatabase, ref, onValue, set, get, child} from "firebase/database";
 import { getFirestore, collection, getDocs} from 'firebase/firestore/lite';
 
 const { ethers } = require("ethers");
@@ -208,37 +208,47 @@ export const setDescription = async(contractAddress, network, descr) =>{
   //const abijson = getABIFunctions(abi);
   let abi = await getContractABI(contractAddress, network);
   abi = await getABIFunctions(abi);
-
-  console.log(abi.length);
+  console.log(abi)
   
   for(let i=0; i < abi.length; i++){
-    const funcInputs = abi[i].inputs
-    let headerHash = "";
-    for(let j=0; j < funcInputs.length; j++){
-      headerHash += funcInputs[j].name;
-    } 
-    headerHash = ethers.utils.id(headerHash);
-    // console.log(headerHash)
-
+    const funcInputs = abi[i].inputs;
+    const funcName = abi[i].name;
+    let headerHash = getHeaderHash(funcInputs)
   
-    set(ref(db, contractAddress + "/" + headerHash), {
+    set(ref(db, contractAddress + "/" + funcName + "/" + headerHash), {
       description: descr
     });
 
   }
 };
 
-export const getContractDescription = async(contractAddress) =>{
-    set(ref(db, contractAddress), {
-      name: "Lending Pool AAve"
-    });
-    var funcDescrRef = ref(db, contractAddress);
+export const getContractDescription = async(contractAddress, abi) =>{
+    console.log("heyyy")
 
-    let data;
-    onValue(funcDescrRef, (snapshot) => {
-      data = snapshot.val();
+    var funcDescrRef = ref(db);
+    await get(child(funcDescrRef, `${contractAddress}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        console.log(snapshot.val());
+        let stupid = snapshot.val().name
+        console.log(stupid)
+        return stupid;
+      } else {
+        console.log("No data available");
+        return "no descriptions yet"
+      }
+    }).catch((error) => {
+      console.error(error);
     });
-    return data.name
+}
+
+export const getHeaderHash = (funcInputs) => {
+    let headerHash = "";
+    for(let j=0; j < funcInputs.length; j++){
+      headerHash += funcInputs[j].name;
+    } 
+    headerHash = ethers.utils.id(headerHash);
+
+    return headerHash;
 }
 
 

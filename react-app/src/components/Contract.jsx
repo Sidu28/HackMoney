@@ -22,7 +22,9 @@ const Contract = ({ address, network, setStatus, status }) => {
       setABI(abiRes);
       const funcRes = getABIFunctions(abiRes);
       const contractRes = await initContract(address, abiRes, network);
-      const funcDescr = await getContractDescription(address);
+      console.log("HE::O")
+      let funcDescr = await getContractDescription(address);
+      console.log(funcDescr);
       setFuncDescr(funcDescr);
       setContract(contractRes);
       setFunctions(funcRes);
