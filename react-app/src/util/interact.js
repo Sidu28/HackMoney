@@ -14,8 +14,6 @@ const keyMap = {
   kovan: process.env.REACT_APP_ALCHEMY_KOVAN,
 };
 
-console.log("API KEY", process.env.REACT_APP_ETHERSCAN_KEY);
-
 const downloadMetamask = "https://metamask.io/download.html";
 
 const firebaseConfig = {

@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
+import { setDescription } from "../util/interact.js";
 
 import { useState, useMemo, useEffect, useCallback } from "react";
 import VoteButton from "./VoteButton.jsx";
@@ -14,7 +15,7 @@ const EditView = ({
   inputs,
 }) => {
   const { id } = useParams();
-  const [value, setValue] = useState("");
+  const [draftDescription, setDraftDescription] = useState("");
   const [cmInstance, setCmInstance] = useState(null);
 
   const autofocusNoSpellcheckerOptions = useMemo(() => {
@@ -35,11 +36,17 @@ const EditView = ({
 
   const handleInputChange = (e) => {
     const val = e.target.value;
-    setValue(val);
+    setDraftDescription(val)
   };
 
+  const callSetDescription = async() => {
+    console.log(draftDescription, contractAddy, network)
+    const res = await setDescription(contractAddy, network, draftDescription);
+    console.log(res);  
+  }
+
   return (
-    <>
+    <div className="eight-hundo">
       <div className="edit-view">
         <h2>Suggest a description</h2>
         <code style={{ fontWeight: "bold" }}>contractURI → (string)</code>{" "}
@@ -59,7 +66,7 @@ const EditView = ({
         <div className="MDE-div">
           <textarea
             type="textarea"
-            value={value}
+            value={draftDescription}
             onChange={handleInputChange}
             placeholder="Enter a description..."
           />
@@ -70,13 +77,13 @@ const EditView = ({
             getCodemirrorInstance={getCmInstanceCallback}
           /> */}
         </div>
-        <button>Submit</button>
+        <button onClick={callSetDescription}>Submit</button>
       </div>
       <div className={`function-box`}>
         <VoteButton count="0" />
         <div className={`left-align function-container`}>
           <p className="tiny-text">{`Posted by 0xc0963dc1839993Fc65Fa26cD2f9b6ae5A1515449, 10 hours ago`}</p>
-          <div  className="description" >
+          <div className="description">
             Lorem Ipsum is simply dummy text of the printing and typesetting
             industry. Lorem Ipsum has been the industry's standard dummy text
             ever since the 1500s, when an unknown printer took a galley of type
@@ -89,7 +96,7 @@ const EditView = ({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
