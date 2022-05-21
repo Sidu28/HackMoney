@@ -206,14 +206,14 @@ export const writeFunction = async (contract, funcName, state) => {
 
 export const setDescription = async(contractAddress, network, descr) =>{
   //const abijson = getABIFunctions(abi);
-  var abi = await getContractABI(contractAddress, network);
+  let abi = await getContractABI(contractAddress, network);
   abi = await getABIFunctions(abi);
 
   console.log(abi.length);
   
   for(let i=0; i < abi.length; i++){
     const funcInputs = abi[i].inputs
-    var headerHash = "";
+    let headerHash = "";
     for(let j=0; j < funcInputs.length; j++){
       headerHash += funcInputs[j].name;
     } 
