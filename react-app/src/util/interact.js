@@ -207,29 +207,41 @@ export const writeFunction = async (contract, funcName, state) => {
   }
 };
 
-export const setDescription = async (contractAddress, network, descr) => {
+export const setDescription = async (selectedFunction, descr) => {
   //const abijson = getABIFunctions(abi);
-  let abi = await getContractABI(contractAddress, network);
-  abi = await getABIFunctions(abi);
-  console.log(abi);
+  const network = selectedFunction.network;
+  const contractAddress = selectedFunction.contractAddy;
+  const funcName = selectedFunction.name;
+  const funcInputs = selectedFunction.inputs;
 
-  for (let i = 0; i < abi.length; i++) {
-    const funcInputs = abi[i].inputs;
-    const funcName = abi[i].name;
-    let headerHash = getHeaderHash(funcInputs, funcName, contractAddress,network);
+  let headerHash = getHeaderHash(funcInputs, funcName, contractAddress,network);
 
-    set(ref(db, contractAddress + "/" + funcName + "/" + headerHash), {
-      description: descr,
-    });
-  }
+  set(ref(db, "Contracts/" + contractAddress + "/functions/" + headerHash), {
+        description: descr,
+      });
+
+  // let abi = await getContractABI(contractAddress, network);
+  // abi = await getABIFunctions(abi);
+  // console.log(abi);
+
+  // for (let i = 0; i < abi.length; i++) {
+  //   const funcInputs = abi[i].inputs;
+  //   const funcName = abi[i].name;
+  //   let headerHash = getHeaderHash(funcInputs, funcName, contractAddress,network);
+
+  //   set(ref(db, "Contracts/" + contractAddress + "/functions/" + headerHash), {
+  //     description: descr,
+  //   });
+  // }
 };
 
-export const getContractDescription = async (contractAddress, abi) => {
+export const getContractDescription = async (contractAddress) => {
   var funcDescrRef = ref(db);
+
   try {
-    const snap = await get(child(funcDescrRef, `${contractAddress}`));
+    const snap = await get(child(funcDescrRef, `Contracts/${contractAddress}/functions`));
     console.log(snap.val());
-    return snap.val().name;
+    return snap.val();
   } catch (e) {
     console.log(e);
     return e.message;

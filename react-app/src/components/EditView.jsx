@@ -24,7 +24,7 @@ const EditView = ({
   const callSetDescription = async() => {
     console.log("hey sum")
     console.log(draftDescription, contractAddy, network)
-    const res = await setDescription(contractAddy, network, draftDescription);
+    const res = await setDescription(selectedFunc, draftDescription);
     console.log(res);  
   }
 

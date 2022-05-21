@@ -14,6 +14,8 @@ const ContractFunction = ({
 }) => {
   const [response, setResponse] = useState("");
   const [state, setState] = useState({});
+  console.log(description)
+
 
   const callFunc = async () => {
     try {

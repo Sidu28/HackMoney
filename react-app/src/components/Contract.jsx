@@ -22,6 +22,9 @@ const Contract = ({ address, network, setStatus, status,setSelectedFunc }) => {
       setABI(abiRes);
       const funcRes = getABIFunctions(abiRes, address, network);
       const contractRes = await initContract(address, abiRes, network);
+      const funcDescr = await getContractDescription(address);
+      console.log(funcDescr);
+      setFuncDescr(funcDescr);
       setContract(contractRes);
       setFunctions(funcRes);
       setStatus("");
@@ -75,7 +78,7 @@ const Contract = ({ address, network, setStatus, status,setSelectedFunc }) => {
                   key={i}
                   contract={contractObj}
                   contractFuncObj={functions[key]}
-                  description={funcDescr}
+                  description={funcDescr[key]}
                   setSelectedFunc={setSelectedFunc}
                 />
               );
