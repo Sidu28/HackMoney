@@ -206,8 +206,11 @@ export const writeFunction = async (contract, funcName, state) => {
 };
 
 
-export const setDescription = async(contractAddress, abi, descr) =>{
+export const setDescription = async(contractAddress, network, descr) =>{
   //const abijson = getABIFunctions(abi);
+  var abi = await getContractABI(contractAddress, network);
+  abi = await getABIFunctions(abi);
+
   console.log(abi.length);
   
   for(let i=0; i < abi.length; i++){
@@ -219,7 +222,7 @@ export const setDescription = async(contractAddress, abi, descr) =>{
     headerHash = ethers.utils.id(headerHash);
     console.log(headerHash)
 
-
+  
     set(ref(db, contractAddress + "/" + headerHash), {
       description: descr
     });
