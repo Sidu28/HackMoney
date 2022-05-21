@@ -4,6 +4,7 @@ import {
   getContractABI,
   initContract,
   getABIFunctions,
+  getContractDescription,
 } from "../util/interact.js";
 import ContractBanner from "./ContractBanner.jsx";
 
@@ -13,6 +14,7 @@ const Contract = ({ address, network, setStatus, status }) => {
 
   const [functions, setFunctions] = useState(null);
   const [contractObj, setContract] = useState(null);
+  const [funcDescr, setFuncDescr] = useState(null);
 
   const load = async () => {
     try {
@@ -20,6 +22,8 @@ const Contract = ({ address, network, setStatus, status }) => {
       setABI(abiRes);
       const funcRes = getABIFunctions(abiRes);
       const contractRes = await initContract(address, abiRes, network);
+      const funcDescr = await getContractDescription(address);
+      setFuncDescr(funcDescr);
       setContract(contractRes);
       setFunctions(funcRes);
       setStatus("");
@@ -30,10 +34,6 @@ const Contract = ({ address, network, setStatus, status }) => {
       setStatus(err.message);
       console.log(err);
     }
-  };
-
-  const fetchDescriptions = async () => {
-    return null;
   };
 
   useEffect(() => {
@@ -80,7 +80,7 @@ const Contract = ({ address, network, setStatus, status }) => {
                   obj.stateMutability === "pure" ||
                   obj.stateMutability === "view"
                 }
-                description={null}
+                description={funcDescr}
                 {...obj}
               />
             ))}
