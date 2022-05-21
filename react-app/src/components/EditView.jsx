@@ -3,6 +3,7 @@ import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { setDescription } from "../util/interact.js";
 
+
 import { useState, useMemo, useEffect, useCallback } from "react";
 import VoteButton from "./VoteButton.jsx";
 const EditView = ({
@@ -11,43 +12,57 @@ const EditView = ({
   setStatus,
   status,
   inputs,
-  selectedFunc
+  selectedFunc,
 }) => {
   const { id } = useParams();
   const [draftDescription, setDraftDescription] = useState("");
 
   const handleInputChange = (e) => {
     const val = e.target.value;
-    setDraftDescription(val)
+    setDraftDescription(val);
   };
 
+<<<<<<< HEAD
   const callSetDescription = async() => {
     console.log("hey sum")
     console.log(draftDescription, contractAddy, network)
     const res = await setDescription(selectedFunc, draftDescription);
     console.log(res);  
   }
+=======
+  const callSetDescription = async () => {
+    console.log("hey sum");
+    console.log(draftDescription, contractAddy, network);
+    const res = await setDescription(contractAddy, network, draftDescription);
+    console.log(res);
+  };
+>>>>>>> 07f3ca2853f7009c0545b9114d169868ec0abe13
 
   return (
     <div className="eight-hundo">
       <div className="edit-view">
         <h2>Suggest a description</h2>
+        <p className="tiny-text tag">{contractAddy ? `Read 📖` : `Write 📝`}</p>
+        <p className="tiny-text tag">{selectedFunc.isRead ? `Read 📖` : `Write 📝`}</p>
+
         <div>
+          <code>
             <span style={{ fontWeight: "800" }}>{selectedFunc.name}</span> →{" "}
             {selectedFunc.parseOutputsJSX(selectedFunc.outputs)}
-          </div>
-        {inputs ? (
-          <form>
-            {" "}
-            {inputs.map((obj, i) => (
-              <div key={i}>
-                <code>
-                  ({obj.type}) {obj.name}
-                </code>
-              </div>
-            ))}
-          </form>
-        ) : null}
+          </code>
+        </div>
+        {selectedFunc.inputs ? (
+            <div>
+              {" "}
+              {selectedFunc.inputs.map((obj, i) => (
+                <div key={i}>
+                  <code>
+                    ({obj.type}) {obj.name}
+                  </code>
+                </div>
+              ))}
+            </div>
+          ) : null}
         <div className="MDE-div">
           <textarea
             type="textarea"
