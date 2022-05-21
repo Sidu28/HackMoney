@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  parseInputs,
   parseOutputsJSX,
   writeFunction,
 } from "../util/interact.js";
@@ -9,15 +8,9 @@ import StarButton from "./StarButton.jsx";
 
 const ContractFunction = ({
   contract,
-  constant,
-  inputs,
-  name,
-  outputs,
-  payable,
-  stateMutability,
-  type,
-  isRead,
+  contractFuncObj,
   description,
+  setSelectedFunc
 }) => {
   const [response, setResponse] = useState("");
   const [state, setState] = useState({});
@@ -25,11 +18,11 @@ const ContractFunction = ({
   const callFunc = async () => {
     try {
       let res;
-      if (isRead) {
-        res = await contract.functions[name](...Object.values(state));
+      if (contractFuncObj.isRead) {
+        res = await contract.functions[contractFuncObj.name](...Object.values(state));
         setResponse(res);
       } else {
-        res = await writeFunction(contract, name, state);
+        res = await writeFunction(contract, contractFuncObj.name, state);
         setResponse(`Transaction hash ${res.hash}`);
       }
     } catch (err) {
@@ -50,6 +43,10 @@ const ContractFunction = ({
     });
   };
 
+  const openEditView = (e) => {
+    setSelectedFunc(contractFuncObj)
+  }
+
   const [showFunction, setShowFunctions] = useState(false);
   return (
     <div
@@ -64,13 +61,13 @@ const ContractFunction = ({
       <div className={`left-align function-container`}>
         <code className="func-signature">
           <div>
-            <span style={{ fontWeight: "800" }}>{name}</span>
+            <span style={{ fontWeight: "800" }}>{contractFuncObj.name}</span>
             {/* {inputs.map((obj, i) => (
             <span style={{ fontStyle: "code" }}>
               ({obj.type}) {obj.name}
             </span>
           ))} */}{" "}
-            → {parseOutputsJSX(outputs)}
+            → {contractFuncObj.parseOutputsJSX(contractFuncObj.outputs)}
           </div>
         </code>
         <div className="description" style={{ color: "grey" }}>
@@ -79,10 +76,10 @@ const ContractFunction = ({
 
         {/* function inputs for read/write */}
         <div className={`left-align ${showFunction ? `show` : "hide"} `}>
-          {inputs ? (
+          {contractFuncObj.inputs ? (
             <form>
               {" "}
-              {inputs.map((obj, i) => (
+              {contractFuncObj.inputs.map((obj, i) => (
                 <div key={i}>
                   <code>
                     ({obj.type}) {obj.name}
@@ -107,15 +104,15 @@ const ContractFunction = ({
             }}
           >
             <button style={{}} onClick={callFunc}>
-              {isRead ? "Read" : "Write"}
+              {contractFuncObj.isRead ? "Read" : "Write"}
             </button>
             <Link to={`/edit/1`}>
-              <button>Suggest</button>
+              <button onClick={openEditView}>Suggest</button>
             </Link>
           </div>
         </div>
       </div>
-      <p className="tiny-text tag">{isRead ? `Read 📖` : `Write 📝`}</p>
+      <p className="tiny-text tag">{contractFuncObj.isRead ? `Read 📖` : `Write 📝`}</p>
     </div>
   );
 };

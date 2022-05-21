@@ -7,32 +7,14 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import VoteButton from "./VoteButton.jsx";
 const EditView = ({
   contractAddy,
-  setContractAddy,
   network,
-  setNetwork,
   setStatus,
   status,
   inputs,
+  selectedFunc
 }) => {
   const { id } = useParams();
   const [draftDescription, setDraftDescription] = useState("");
-  const [cmInstance, setCmInstance] = useState(null);
-
-  const autofocusNoSpellcheckerOptions = useMemo(() => {
-    return {
-      autofocus: true,
-      spellChecker: false,
-    };
-  }, []);
-
-  const getCmInstanceCallback = useCallback((editor) => {
-    setCmInstance(editor);
-  }, []);
-
-  useEffect(() => {
-    if (!cmInstance) return;
-    cmInstance.doc.clearHistory();
-  }, [cmInstance]);
 
   const handleInputChange = (e) => {
     const val = e.target.value;
@@ -50,8 +32,10 @@ const EditView = ({
     <div className="eight-hundo">
       <div className="edit-view">
         <h2>Suggest a description</h2>
-        <code style={{ fontWeight: "bold" }}>contractURI → (string)</code>{" "}
-        <span>in 0x7408F19f1040ADDf739CEd33A84416265d0B15E4</span>
+        <div>
+            <span style={{ fontWeight: "800" }}>{selectedFunc.name}</span> →{" "}
+            {selectedFunc.parseOutputsJSX(selectedFunc.outputs)}
+          </div>
         {inputs ? (
           <form>
             {" "}

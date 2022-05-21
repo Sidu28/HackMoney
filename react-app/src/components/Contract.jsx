@@ -8,7 +8,7 @@ import {
 } from "../util/interact.js";
 import ContractBanner from "./ContractBanner.jsx";
 
-const Contract = ({ address, network, setStatus, status }) => {
+const Contract = ({ address, network, setStatus, status,setSelectedFunc }) => {
   const [abi, setABI] = useState(null);
   const [description, setDescription] = useState(null);
 
@@ -20,12 +20,8 @@ const Contract = ({ address, network, setStatus, status }) => {
     try {
       const abiRes = await getContractABI(address, network);
       setABI(abiRes);
-      const funcRes = getABIFunctions(abiRes);
+      const funcRes = getABIFunctions(abiRes, address, network);
       const contractRes = await initContract(address, abiRes, network);
-      console.log("HE::O")
-      let funcDescr = await getContractDescription(address);
-      console.log(funcDescr);
-      setFuncDescr(funcDescr);
       setContract(contractRes);
       setFunctions(funcRes);
       setStatus("");
@@ -73,19 +69,17 @@ const Contract = ({ address, network, setStatus, status }) => {
 
         {functions ? (
           <div className="eight-hundo">
-            {/* <h2>Functions</h2> */}
-            {functions.map((obj, i) => (
-              <ContractFunction
-                key={i}
-                contract={contractObj}
-                isRead={
-                  obj.stateMutability === "pure" ||
-                  obj.stateMutability === "view"
-                }
-                description={funcDescr}
-                {...obj}
-              />
-            ))}
+            {Object.keys(functions).map((key, i) => {
+              return (
+                <ContractFunction
+                  key={i}
+                  contract={contractObj}
+                  contractFuncObj={functions[key]}
+                  description={funcDescr}
+                  setSelectedFunc={setSelectedFunc}
+                />
+              );
+            })}
           </div>
         ) : null}
       </div>

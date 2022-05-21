@@ -13,6 +13,8 @@ function App() {
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
 
+  const [selectedFunc, setSelectedFunc] = useState(null);
+
   return (
     <Router>
       <div className="App">
@@ -36,6 +38,7 @@ function App() {
                 network={network}
                 setStatus={setStatus}
                 status={status}
+                setSelectedFunc={setSelectedFunc}
               />
             }
           />
@@ -45,11 +48,10 @@ function App() {
             element={
               <EditView
                 contractAddy={contractAddy}
-                setContractAddy={setContractAddy}
                 network={network}
-                setNetwork={setNetwork}
                 setStatus={setStatus}
                 status={status}
+                selectedFunc={selectedFunc}
               />
             }
           />

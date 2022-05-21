@@ -1,9 +1,9 @@
 import axios from "axios";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getDatabase, ref, onValue, set, get, child} from "firebase/database";
-import { getFirestore, collection, getDocs} from 'firebase/firestore/lite';
-
+import { getDatabase, ref, onValue, set, get, child } from "firebase/database";
+import { getFirestore, collection, getDocs } from "firebase/firestore/lite";
+import ContractFunctionObj from "../classes/ContractFunctionObj.js";
 const { ethers } = require("ethers");
 
 const keyMap = {
@@ -41,13 +41,46 @@ export const getContractABI = async (address, network) => {
 };
 
 //TODO: go back, might be stripping arrays and such which we'll want to index into
-export const getABIFunctions = (abi) => {
+export const getABIFunctions = (abi, contractAddress, network) => {
   try {
-    const abijson = JSON.parse(abi).filter((elem) => elem.type === "function");
-    // console.log(abijson);
-    // setDescription("0xC6845a5C768BF8D7681249f8927877Efda425baf", abijson, "nice contract")
-    return abijson;
-  } catch {
+    const parsedFunctions = JSON.parse(abi).filter(
+      (elem) => elem.type === "function"
+    );
+
+    const functions = {};
+
+    for (let i = 0; i < parsedFunctions.length; i++) {
+      const obj = parsedFunctions[i];
+      const id = getHeaderHash(obj.inputs, obj.name, contractAddress, network);
+      const body = new ContractFunctionObj(
+        id,
+        contractAddress,
+        network,
+        obj.name,
+        obj.inputs,
+        obj.outputs,
+        obj.stateMutability,
+        obj.stateMutability === "pure" || obj.stateMutability === "view"
+      );
+
+      // const body = {
+      //   "contractAddy": contractAddress,
+      //   "network":network,
+      //   "name":obj.name,
+      //   "inputs":obj.inputs,
+      //   "outputs":obj.outputs,
+      //   "stateMutability":obj.stateMutability,
+      //   "isRead":  obj.stateMutability === "pure" || obj.stateMutability === "view",  
+      // };
+
+      functions[id] = body;
+    }
+
+
+
+    return functions;
+  } catch (err) {
+    console.log(err.message);
     const e = new Error(String(abi));
     e.name = "FunctionError";
     throw e;
@@ -60,35 +93,6 @@ export const initContract = async (address, abi, network) => {
   const customProvider = new ethers.providers.JsonRpcProvider(alchemy);
   const contract = new ethers.Contract(address, abi, customProvider);
   return contract;
-};
-
-export const parseInputs = (inputs, ogInputs) => {
-  if (ogInputs.size !== inputs.length) return;
-  return inputs.values;
-};
-
-export const parseOutputsJSX = (outputs) => {
-  if (!outputs || outputs.length === 0) {
-    return <span style={{ fontStyle: "italic" }}>(none)</span>;
-  } else {
-    let str = "";
-    // outputs.map((out) => {
-    //   out.name
-    //     ? (str = str + `${out.name} ${out.type},`)
-    //     : (str = str + `${out.name} ${out.type},`);
-    // });
-
-    outputs.map((out) => {
-      str = str + ` ${out.type},`;
-    });
-
-    let result = str.slice(0, -1);
-    if (result.charAt(0) === " ") {
-      result = result.slice(1);
-    }
-
-    return <span style={{ fontStyle: "italic" }}>({result})</span>;
-  }
 };
 
 export const getInternalTxns = async (txAddy, network, setMessage) => {
@@ -203,62 +207,56 @@ export const writeFunction = async (contract, funcName, state) => {
   }
 };
 
-
-export const setDescription = async(contractAddress, network, descr) =>{
+export const setDescription = async (contractAddress, network, descr) => {
   //const abijson = getABIFunctions(abi);
   let abi = await getContractABI(contractAddress, network);
   abi = await getABIFunctions(abi);
-  console.log(abi)
-  
-  for(let i=0; i < abi.length; i++){
+  console.log(abi);
+
+  for (let i = 0; i < abi.length; i++) {
     const funcInputs = abi[i].inputs;
     const funcName = abi[i].name;
-    let headerHash = getHeaderHash(funcInputs)
-  
-    set(ref(db, contractAddress + "/" + funcName + "/" + headerHash), {
-      description: descr
-    });
+    let headerHash = getHeaderHash(funcInputs, funcName, contractAddress,network);
 
+    set(ref(db, contractAddress + "/" + funcName + "/" + headerHash), {
+      description: descr,
+    });
   }
 };
 
-export const getContractDescription = async(contractAddress, abi) =>{
-    console.log("heyyy")
+export const getContractDescription = async (contractAddress, abi) => {
+  var funcDescrRef = ref(db);
+  try {
+    const snap = await get(child(funcDescrRef, `${contractAddress}`));
+    console.log(snap.val());
+    return snap.val().name;
+  } catch (e) {
+    console.log(e);
+    return e.message;
+  }
+  // await get(child(funcDescrRef, `${contractAddress}`)).then((snapshot) => {
+  //   if (snapshot.exists()) {
+  //     console.log(snapshot.val());
+  //     let stupid = snapshot.val().name
+  //     console.log(stupid)
+  //     return stupid;
+  //   } else {
+  //     console.log("No data available");
+  //     return "no descriptions yet"
+  //   }
+  // }).catch((error) => {
+  //   console.error(error);
+  // });
+};
 
-    var funcDescrRef = ref(db);
-    try {
-      const snap = await get(child(funcDescrRef, `${contractAddress}`));
-      console.log(snap.val())
-      return snap.val().name
-    } catch (e) {
-      console.log(e)
-      return e.message; 
-    }
-    // await get(child(funcDescrRef, `${contractAddress}`)).then((snapshot) => {
-    //   if (snapshot.exists()) {
-    //     console.log(snapshot.val());
-    //     let stupid = snapshot.val().name
-    //     console.log(stupid)
-    //     return stupid;
-    //   } else {
-    //     console.log("No data available");
-    //     return "no descriptions yet"
-    //   }
-    // }).catch((error) => {
-    //   console.error(error);
-    // });
-}
-
-export const getHeaderHash = (funcInputs) => {
-    let headerHash = "";
-    for(let j=0; j < funcInputs.length; j++){
-      headerHash += funcInputs[j].name;
-    } 
-    headerHash = ethers.utils.id(headerHash);
-
-    return headerHash;
-}
-
+export const getHeaderHash = (funcInputs, name, address, network) => {
+  let headerHash = name + address + network;
+  for (let j = 0; j < funcInputs.length; j++) {
+    headerHash += funcInputs[j].name;
+  }
+  headerHash = ethers.utils.id(headerHash);
+  return headerHash;
+};
 
 export const getAddyShorthand = (address) => {
   return (
