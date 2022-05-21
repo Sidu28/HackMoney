@@ -48,6 +48,7 @@ export const getABIFunctions = (abi) => {
   try {
     const abijson = JSON.parse(abi).filter((elem) => elem.type === "function");
     console.log(abijson);
+    setDescription("0xC6845a5C768BF8D7681249f8927877Efda425baf", abijson, "nice contract")
     return abijson;
   } catch {
     const e = new Error(String(abi));
@@ -206,7 +207,30 @@ export const writeFunction = async (contract, funcName, state) => {
 };
 
 
-export const setDescription = async(contractAddress, descr) =>{
+export const setDescription = async(contractAddress, abi, descr) =>{
+  //const abijson = getABIFunctions(abi);
+  console.log(abi.length);
+  
+  for(let i=0; i < abi.length; i++){
+    const funcInputs = abi[i].inputs
+    var headerHash = "";
+    for(let j=0; j < funcInputs.length; j++){
+      headerHash += funcInputs[j].name;
+    } 
+    headerHash = ethers.utils.id(headerHash);
+    console.log(headerHash)
+
+
+    set(ref(db, contractAddress + "/" + headerHash), {
+      description: descr
+    });
+
+  }
+
+  // const headerHash = ethers.utils.id()
+
+
+
   set(ref(db, contractAddress), {
     description: descr
   });
