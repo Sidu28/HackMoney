@@ -226,19 +226,27 @@ export const getContractDescription = async(contractAddress, abi) =>{
     console.log("heyyy")
 
     var funcDescrRef = ref(db);
-    await get(child(funcDescrRef, `${contractAddress}`)).then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log(snapshot.val());
-        let stupid = snapshot.val().name
-        console.log(stupid)
-        return stupid;
-      } else {
-        console.log("No data available");
-        return "no descriptions yet"
-      }
-    }).catch((error) => {
-      console.error(error);
-    });
+    try {
+      const snap = await get(child(funcDescrRef, `${contractAddress}`));
+      console.log(snap.val())
+      return snap.val().name
+    } catch (e) {
+      console.log(e)
+      return e.message; 
+    }
+    // await get(child(funcDescrRef, `${contractAddress}`)).then((snapshot) => {
+    //   if (snapshot.exists()) {
+    //     console.log(snapshot.val());
+    //     let stupid = snapshot.val().name
+    //     console.log(stupid)
+    //     return stupid;
+    //   } else {
+    //     console.log("No data available");
+    //     return "no descriptions yet"
+    //   }
+    // }).catch((error) => {
+    //   console.error(error);
+    // });
 }
 
 export const getHeaderHash = (funcInputs) => {
