@@ -22,21 +22,12 @@ const EditView = ({
     setDraftDescription(val);
   };
 
-<<<<<<< HEAD
   const callSetDescription = async() => {
     console.log("hey sum")
     console.log(draftDescription, contractAddy, network)
     const res = await setDescription(selectedFunc, draftDescription);
     console.log(res);  
   }
-=======
-  const callSetDescription = async () => {
-    console.log("hey sum");
-    console.log(draftDescription, contractAddy, network);
-    const res = await setDescription(contractAddy, network, draftDescription);
-    console.log(res);
-  };
->>>>>>> 07f3ca2853f7009c0545b9114d169868ec0abe13
 
   return (
     <div className="eight-hundo">

@@ -4,7 +4,7 @@ import {
   getContractABI,
   initContract,
   getABIFunctions,
-  getContractDescription,
+  getAllFunctionDescriptions,
 } from "../util/interact.js";
 import ContractBanner from "./ContractBanner.jsx";
 
@@ -22,7 +22,7 @@ const Contract = ({ address, network, setStatus, status,setSelectedFunc }) => {
       setABI(abiRes);
       const funcRes = getABIFunctions(abiRes, address, network);
       const contractRes = await initContract(address, abiRes, network);
-      const funcDescr = await getContractDescription(address);
+      const funcDescr = await getAllFunctionDescriptions(address);
       console.log(funcDescr);
       setFuncDescr(funcDescr);
       setContract(contractRes);
@@ -78,7 +78,7 @@ const Contract = ({ address, network, setStatus, status,setSelectedFunc }) => {
                   key={i}
                   contract={contractObj}
                   contractFuncObj={functions[key]}
-                  description={funcDescr[key]}
+                  description={funcDescr[key] ? funcDescr[key].description : null}
                   setSelectedFunc={setSelectedFunc}
                 />
               );

@@ -235,30 +235,17 @@ export const setDescription = async (selectedFunction, descr) => {
   // }
 };
 
-export const getContractDescription = async (contractAddress) => {
-  var funcDescrRef = ref(db);
+export const getAllFunctionDescriptions = async (contractAddress) => {
+  const funcDescrRef = ref(db);
 
   try {
-    const snap = await get(child(funcDescrRef, `Contracts/${contractAddress}/functions`));
-    console.log(snap.val());
-    return snap.val();
+    const snapshot = await get(child(funcDescrRef, `Contracts/${contractAddress}/functions`));
+    const data = snapshot.val();
+    return data;
   } catch (e) {
     console.log(e);
     return e.message;
   }
-  // await get(child(funcDescrRef, `${contractAddress}`)).then((snapshot) => {
-  //   if (snapshot.exists()) {
-  //     console.log(snapshot.val());
-  //     let stupid = snapshot.val().name
-  //     console.log(stupid)
-  //     return stupid;
-  //   } else {
-  //     console.log("No data available");
-  //     return "no descriptions yet"
-  //   }
-  // }).catch((error) => {
-  //   console.error(error);
-  // });
 };
 
 export const getHeaderHash = (funcInputs, name, address, network) => {
