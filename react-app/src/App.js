@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import WalletButton from "./components/WalletButton";
 import Contract from "./components/Contract";
 import EditView from "./components/EditView";
-import SearchContractBar from "./components/SearchContractBar";
+import Navbar from "./components/Navbar";
 
 function App() {
   const [contractAddy, setContractAddy] = useState("");
@@ -16,19 +16,15 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <div className="navbar">
-          <SearchContractBar
-            contractAddy={contractAddy}
-            setContractAddy={setContractAddy}
-            network={network}
-            setNetwork={setNetwork}
-          />
-          <WalletButton
-            walletAddress={walletAddress}
-            setWallet={setWallet}
-            setStatus={setStatus}
-          />
-        </div>
+        <Navbar
+          contractAddy={contractAddy}
+          setContractAddy={setContractAddy}
+          network={network}
+          setNetwork={setNetwork}
+          walletAddress={walletAddress}
+          setWallet={setWallet}
+          setStatus={setStatus}
+        />
         {/* TODO: look into <Link to=""> to prevent extra server reqs with routing: https://www.youtube.com/watch?v=DO-pSysGItQ */}
         <Routes>
           <Route

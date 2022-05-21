@@ -1,7 +1,7 @@
 import axios from "axios";
-import { initializeApp } from 'firebase/app';
+import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs } from "firebase/firestore/lite";
 
 const { ethers } = require("ethers");
 
@@ -13,10 +13,9 @@ const keyMap = {
   kovan: process.env.REACT_APP_ALCHEMY_KOVAN,
 };
 
-console.log("API KEY", process.env.REACT_APP_ETHERSCAN_KEY)
+console.log("API KEY", process.env.REACT_APP_ETHERSCAN_KEY);
 
 const downloadMetamask = "https://metamask.io/download.html";
-
 
 const firebaseConfig = {
   apiKey: "AIzaSyDZXeUzRW4EGzjr2PJMLVZdyuSxTncSGzE",
@@ -25,7 +24,7 @@ const firebaseConfig = {
   storageBucket: "hackmoney-6ef38.appspot.com",
   messagingSenderId: "703593056992",
   appId: "1:703593056992:web:137854bf0299b2436a9e85",
-  measurementId: "G-T8FP3JZE4J"
+  measurementId: "G-T8FP3JZE4J",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -203,38 +202,46 @@ export const writeFunction = async (contract, funcName, state) => {
   }
 };
 
-export const setDescription = async(contractAddress, funcHeader, descr) =>{
+export const setDescription = async (contractAddress, funcHeader, descr) => {
   try {
-    const databaseHash = ethers.utils.id(contractAddress.concat("", funcHeader));
+    const databaseHash = ethers.utils.id(
+      contractAddress.concat("", funcHeader)
+    );
     var functionDescriptions = db.collection("function descriptions");
 
     functionDescriptions.doc(databaseHash).set({
-        description: descr
+      description: descr,
     });
-
   } catch (e) {
     console.log(e);
     return e;
   }
+};
 
-}
+export const getDescription = async (contractAddress, funcHeader) => {
+  const databaseHash = ethers.utils.id(contractAddress.concat("", funcHeader));
+  var functionDescriptions = db
+    .collection("function descriptions")
+    .doc(databaseHash);
 
-export const getDescription = async(contractAddress, funcHeader) =>{
-    const databaseHash = ethers.utils.id(contractAddress.concat("", funcHeader));
-    var functionDescriptions = db.collection("function descriptions").doc(databaseHash);
-
-    functionDescriptions.get().then((doc) => {
+  functionDescriptions
+    .get()
+    .then((doc) => {
       if (doc.exists) {
-          console.log("Document data:", doc.data());
-          return doc.data();
+        console.log("Document data:", doc.data());
+        return doc.data();
       } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
       }
-  }).catch((error) => {
+    })
+    .catch((error) => {
       console.log("Error getting document:", error);
-  });
+    });
+};
 
-}
-
-
+export const getAddyShorthand = (address) => {
+  return (
+    String(address).substring(0, 6) + "..." + String(address).substring(38)
+  );
+};

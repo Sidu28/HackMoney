@@ -5,9 +5,12 @@ import {
   initContract,
   getABIFunctions,
 } from "../util/interact.js";
+import ContractBanner from "./ContractBanner.jsx";
 
 const Contract = ({ address, network, setStatus, status }) => {
   const [abi, setABI] = useState(null);
+  const [description, setDescription] = useState(null);
+
   const [functions, setFunctions] = useState(null);
   const [contractObj, setContract] = useState(null);
 
@@ -29,9 +32,9 @@ const Contract = ({ address, network, setStatus, status }) => {
     }
   };
 
-  const fetchDescriptions = async() => {
+  const fetchDescriptions = async () => {
     return null;
-  }
+  };
 
   useEffect(() => {
     load();
@@ -56,24 +59,18 @@ const Contract = ({ address, network, setStatus, status }) => {
           </p>
         ) : null}
 
-        <div className="contract-banner">
-          <h2>EpicArt (0xbe59...cd0)</h2>
-          <div>
-            <p>
-              ✏️ Creator:{" "}
-              <span style={{ fontWeight: "bold" }}>
-                0xbe59794dd2101b6f4313a28c0c2b99eae4c92cd0
-              </span>
-            </p>
-            <p>
-              💰 Bounty: <span style={{ fontWeight: "bold" }}>10 ETH</span>
-            </p>
-            <p>TODO: ask Sid what is relevant here</p>
-          </div>
-        </div>
+        {contractObj ? (
+          <ContractBanner
+            name={null}
+            description={null}
+            address={address}
+            website={null}
+            docs={null}
+          />
+        ) : null}
 
         {functions ? (
-          <>
+          <div className="eight-hundo">
             {/* <h2>Functions</h2> */}
             {functions.map((obj, i) => (
               <ContractFunction
@@ -87,7 +84,7 @@ const Contract = ({ address, network, setStatus, status }) => {
                 {...obj}
               />
             ))}
-          </>
+          </div>
         ) : null}
       </div>
     </>

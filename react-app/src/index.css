@@ -5,21 +5,37 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size:16px;
+  font-size: 16px;
 }
 
+a {
+  text-decoration: none;
+}
 
 .App {
-  max-width: 800px;
-  margin: auto;
   display: flex;
   flex-direction: column;
 }
 
+.eight-hundo {
+  width: 800px;
+  margin: auto;
+}
+
 .navbar {
+  background-color: darkslateblue;
+  padding: 8px;
+  position: fixed;
+  width: 100%;
+}
+
+.navbar-items-div {
+  margin: auto;
+
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  max-width: 1000px;
 }
 
 code {
@@ -32,7 +48,6 @@ code {
   gap: 8px;
   justify-content: center;
   align-items: baseline;
-  padding: 8px 0px;
 }
 
 .search-input {
@@ -50,8 +65,13 @@ code {
 
 .contract-banner {
   background-color: lavender;
-  color: darkslateblue;
   padding: 8px;
+  margin-top: 40px;
+  color: black;
+}
+
+.contract-banner h2 {
+  margin: 0px;
 }
 
 .function-box {
@@ -76,15 +96,14 @@ code {
 
 #walletButton {
   justify-content: flex-end;
-  background-color: darkslateblue;
-  color: white;
+  background-color: lavender;
+  color: black;
 }
 
 button {
   background-color: lavender;
   border: none;
   padding: 6px 16px;
-  margin-top: 16px;
   border-radius: 2px;
 }
 
@@ -172,7 +191,7 @@ button:hover {
 
 .tag {
   background-color: lavender;
-  color:grey;
+  color: grey;
   padding: 8px;
   border-radius: 8px;
   margin: 9px 8px 0px 0px;
