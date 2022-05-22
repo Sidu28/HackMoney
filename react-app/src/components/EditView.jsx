@@ -7,6 +7,7 @@ import { setDescription } from "../util/interact.js";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import VoteButton from "./VoteButton.jsx";
 const EditView = ({
+  walletAddy,
   contractAddy,
   network,
   setStatus,
@@ -23,9 +24,7 @@ const EditView = ({
   };
 
   const callSetDescription = async() => {
-    console.log("hey sum")
-    console.log(draftDescription, contractAddy, network)
-    const res = await setDescription(selectedFunc, draftDescription);
+    const res = await setDescription(selectedFunc, walletAddy, draftDescription);
     console.log(res);  
   }
 
@@ -33,7 +32,7 @@ const EditView = ({
     <div className="eight-hundo">
       <div className="edit-view">
         <h2>Suggest a description</h2>
-        <p className="tiny-text tag">{contractAddy ? `Read 📖` : `Write 📝`}</p>
+        <p className="tiny-text tag">{contractAddy}</p>
         <p className="tiny-text tag">{selectedFunc.isRead ? `Read 📖` : `Write 📝`}</p>
 
         <div>

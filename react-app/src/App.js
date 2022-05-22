@@ -6,7 +6,7 @@ import EditView from "./components/EditView";
 import Navbar from "./components/Navbar";
 
 function App() {
-  const [contractAddy, setContractAddy] = useState("");
+  const [contractAddy, setContractAddy] = useState("0xC6845a5C768BF8D7681249f8927877Efda425baf");
   const [network, setNetwork] = useState("mainnet");
 
   //wallet stuff
@@ -47,6 +47,7 @@ function App() {
             path="/edit/:id"
             element={
               <EditView
+              walletAddy={walletAddress}
                 contractAddy={contractAddy}
                 network={network}
                 setStatus={setStatus}

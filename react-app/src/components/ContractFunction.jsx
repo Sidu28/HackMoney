@@ -1,20 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   parseOutputsJSX,
   writeFunction,
+  getSingleFunctionDescrip
 } from "../util/interact.js";
 import StarButton from "./StarButton.jsx";
 
 const ContractFunction = ({
   contract,
   contractFuncObj,
-  description,
   setSelectedFunc
 }) => {
   const [response, setResponse] = useState("");
   const [state, setState] = useState({});
-
+  const [description, setDescription] = useState(null)
 
   const callFunc = async () => {
     try {
@@ -33,8 +33,14 @@ const ContractFunction = ({
   };
 
 
-  // useEffect(() => {
-  // }, [contract]);
+  const load = async() => {
+    const dRes = await getSingleFunctionDescrip(contractFuncObj.contractAddy, contractFuncObj.id)
+    setDescription(dRes);
+  }
+
+  useEffect(() => {
+    load()
+  }, [description]);
 
   const handleInputChange = (e) => {
     const value = e.target.value;

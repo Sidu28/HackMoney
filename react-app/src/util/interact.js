@@ -1,7 +1,19 @@
 import axios from "axios";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getDatabase, ref, onValue, set, get, child } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  get,
+  child,
+  push,
+  query,
+  limitToLast,
+  limitToFirst,
+  orderByChild,
+} from "firebase/database";
 import { getFirestore, collection, getDocs } from "firebase/firestore/lite";
 import ContractFunctionObj from "../classes/ContractFunctionObj.js";
 const { ethers } = require("ethers");
@@ -70,13 +82,11 @@ export const getABIFunctions = (abi, contractAddress, network) => {
       //   "inputs":obj.inputs,
       //   "outputs":obj.outputs,
       //   "stateMutability":obj.stateMutability,
-      //   "isRead":  obj.stateMutability === "pure" || obj.stateMutability === "view",  
+      //   "isRead":  obj.stateMutability === "pure" || obj.stateMutability === "view",
       // };
 
       functions[id] = body;
     }
-
-
 
     return functions;
   } catch (err) {
@@ -199,7 +209,6 @@ export const writeFunction = async (contract, funcName, state) => {
     const signer = provider.getSigner(); // TODO, change so don't have to connect on each call
     const newContract = contract.connect(signer);
     const res = await newContract.functions[funcName](...Object.values(state));
-    console.log(res);
     return res;
   } catch (e) {
     console.log(e);
@@ -207,39 +216,90 @@ export const writeFunction = async (contract, funcName, state) => {
   }
 };
 
-export const setDescription = async (selectedFunction, descr) => {
-  //const abijson = getABIFunctions(abi);
-  const network = selectedFunction.network;
-  const contractAddress = selectedFunction.contractAddy;
-  const funcName = selectedFunction.name;
-  const funcInputs = selectedFunction.inputs;
+export const setDescription = async (selectedFunction, walletAddy, descr) => {
+  const contractAddress = String(selectedFunction.contractAddy);
+  const headerHash = String(selectedFunction.id);
 
-  let headerHash = getHeaderHash(funcInputs, funcName, contractAddress,network);
+  try {
+    if (!walletAddy) {
+      const e = new Error(
+        "You must be signed in with your wallet to submit a description"
+      );
+      e.name = "WalletError";
+      throw e;
+    }
 
-  set(ref(db, "Contracts/" + contractAddress + "/functions/" + headerHash), {
-        description: descr,
-      });
+    const descripRef = ref(
+      db,
+      "Contracts/" +
+        contractAddress +
+        "/functions/" +
+        headerHash +
+        "/descriptions"
+    );
+    const newDescripRef = push(descripRef);
+    set(newDescripRef, {
+      author: walletAddy,
+      content: descr,
+      date: Date.now(),
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
 
-  // let abi = await getContractABI(contractAddress, network);
-  // abi = await getABIFunctions(abi);
-  // console.log(abi);
+export const getContractMetadata = async (contractAddress) => {
+  const metadataRef = ref(db);
 
-  // for (let i = 0; i < abi.length; i++) {
-  //   const funcInputs = abi[i].inputs;
-  //   const funcName = abi[i].name;
-  //   let headerHash = getHeaderHash(funcInputs, funcName, contractAddress,network);
+  try {
+    const snapshot = await get(
+      child(metadataRef, `Contracts/${contractAddress}/metadata`)
+    );
 
-  //   set(ref(db, "Contracts/" + contractAddress + "/functions/" + headerHash), {
-  //     description: descr,
-  //   });
-  // }
+    if (snapshot.exists()) {
+      return snapshot.val();
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.log(e);
+    return e.message;
+  }
+};
+
+//TODO: get description stored in IPFS that has highest upvotes/downvotes
+export const getSingleFunctionDescrip = async (contractAddress, hash) => {
+  const funcDescrRef = ref(db);
+
+  try {
+    // get first element stored in DB
+    const snapshot = await get(
+      child(
+        funcDescrRef,
+        "Contracts/" + contractAddress + "/functions/" + hash + "/descriptions"
+      ),
+      limitToFirst(1)
+    );
+    const data = snapshot.val();
+    if (data) {
+      const key = Object.keys(data)
+      return data[key].content;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.log(e);
+    return e.message;
+  }
 };
 
 export const getAllFunctionDescriptions = async (contractAddress) => {
   const funcDescrRef = ref(db);
 
   try {
-    const snapshot = await get(child(funcDescrRef, `Contracts/${contractAddress}/functions`));
+    const snapshot = await get(
+      child(funcDescrRef, `Contracts/${contractAddress}/functions`)
+    );
     const data = snapshot.val();
     return data;
   } catch (e) {

@@ -5,16 +5,17 @@ import {
   initContract,
   getABIFunctions,
   getAllFunctionDescriptions,
+  getContractMetadata
 } from "../util/interact.js";
 import ContractBanner from "./ContractBanner.jsx";
 
 const Contract = ({ address, network, setStatus, status,setSelectedFunc }) => {
   const [abi, setABI] = useState(null);
-  const [description, setDescription] = useState(null);
 
   const [functions, setFunctions] = useState(null);
   const [contractObj, setContract] = useState(null);
-  const [funcDescr, setFuncDescr] = useState(null);
+
+  const [metadata, setMetadata] = useState(null);
 
   const load = async () => {
     try {
@@ -22,15 +23,16 @@ const Contract = ({ address, network, setStatus, status,setSelectedFunc }) => {
       setABI(abiRes);
       const funcRes = getABIFunctions(abiRes, address, network);
       const contractRes = await initContract(address, abiRes, network);
-      const funcDescr = await getAllFunctionDescriptions(address);
-      console.log(funcDescr);
-      setFuncDescr(funcDescr);
+
+      const meta = await getContractMetadata(address);
+      setMetadata(meta);
       setContract(contractRes);
       setFunctions(funcRes);
       setStatus("");
     } catch (err) {
       setABI(null);
       setContract(null);
+      setMetadata(null);
       setFunctions(null);
       setStatus(err.message);
       console.log(err);
@@ -62,11 +64,11 @@ const Contract = ({ address, network, setStatus, status,setSelectedFunc }) => {
 
         {contractObj ? (
           <ContractBanner
-            name={null}
-            description={null}
+            name={metadata ? metadata.name : null}
+            description={metadata ? metadata.description : null}
             address={address}
-            website={null}
-            docs={null}
+            website={metadata ? metadata.website : null}
+            docs={metadata ? metadata.docs : null}
           />
         ) : null}
 
@@ -78,7 +80,6 @@ const Contract = ({ address, network, setStatus, status,setSelectedFunc }) => {
                   key={i}
                   contract={contractObj}
                   contractFuncObj={functions[key]}
-                  description={funcDescr[key] ? funcDescr[key].description : null}
                   setSelectedFunc={setSelectedFunc}
                 />
               );
